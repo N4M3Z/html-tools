@@ -1,0 +1,15 @@
+repos:
+  - repo: local
+    hooks:
+      - id: python-tests
+        name: python tests
+        entry: python3 -m unittest discover -s tests
+        language: system
+        pass_filenames: false
+        always_run: true
+      - id: node-tests
+        name: node tests
+        entry: node --test tests/
+        language: system
+        pass_filenames: false
+        always_run: true
