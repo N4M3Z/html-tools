@@ -1,8 +1,9 @@
 import base64
 import json
-from pathlib import Path
 import tempfile
 import unittest
+from pathlib import Path
+
 from htmltools.bundle import Bundler
 from htmltools.export import export
 

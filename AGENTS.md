@@ -24,8 +24,8 @@
   focus bridge that frames use to hand Escape and Tab back to the parent.
 - `htmltools/export.py`: `export(source, destination, folders)` with the manifest check.
 - `htmltools/__main__.py`: the `export` and `bundle` commands.
-- `openspec/`: spec-driven changes. `extract-html-tools-runtime` records the split from slides,
-  `cast-player-runtime` the recording player.
+- `docs/changes/` and `docs/specs/`: the spec-driven change tree (HTML-0001 rule: the native `docs/` root, no `openspec/`).
+  `extract-html-tools-runtime` records the split from slides, `cast-player-runtime` the recording player.
 
 Plain browser JavaScript and the Python standard library. No package manager, no build step. Every runtime
 file exports its pure functions through `module.exports` when loaded by node, so the tests need no browser.
@@ -34,7 +34,7 @@ file exports its pure functions through `module.exports` when loaded by node, so
 
 - `python3 -m unittest discover -s tests -v`: bundling and export.
 - `node --test tests/`: the tuicr format, the frame geometry, and the cast player.
-- `openspec validate --all --strict`: the change tree.
+- `rune spec doctor` and `rune spec validate`: the change tree.
 - `prek run --all-files`: the same two test commands, from `.pre-commit-config.yaml`.
 
 ## Operations

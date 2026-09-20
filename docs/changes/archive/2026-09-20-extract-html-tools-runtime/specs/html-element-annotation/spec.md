@@ -7,9 +7,9 @@ comments, without coupling the script to one page shape.
 
 ### Requirement: Element annotations
 
-The script SHALL let a reviewer attach a typed note (ISSUE, NOTE, SUGGESTION, PRAISE) to an element of the
+The script MUST let a reviewer attach a typed note (ISSUE, NOTE, SUGGESTION, PRAISE) to an element of the
 unit on view, to an element inside a same-origin frame, or to a part of an inline SVG.
-Notes SHALL persist per page path in browser storage and SHALL show only in annotate mode.
+Notes MUST persist per page path in browser storage and MUST show only in annotate mode.
 
 #### Scenario: Reviewer annotates an element inside a figure frame
 
@@ -18,9 +18,9 @@ Notes SHALL persist per page path in browser storage and SHALL show only in anno
 
 ### Requirement: tuicr export
 
-The script SHALL copy all notes as one tuicr review comment: a header, a legend of the used kinds, and one
+The script MUST copy all notes as one tuicr review comment: a header, a legend of the used kinds, and one
 numbered `**[KIND]**` line per note with the page name, the unit id, the element address, and the text.
-The line format SHALL NOT change between versions without a note in the change that does it.
+The line format MUST NOT change between versions without a note in the change that does it.
 
 #### Scenario: Reviewer copies two notes on different units
 
@@ -29,9 +29,9 @@ The line format SHALL NOT change between versions without a note in the change t
 
 ### Requirement: Page shape configuration
 
-The script SHALL read the unit selector, the selector of the unit on view, and the navigation function from
+The script MUST read the unit selector, the selector of the unit on view, and the navigation function from
 `window.HTML_ANNOTATE` when the page sets it before the script loads.
-The defaults SHALL be a slide deck: `.slide`, `.slide.active`, and the `#N` hash.
+The defaults MUST be a slide deck: `.slide`, `.slide.active`, and the `#N` hash.
 
 #### Scenario: Deck loads the script without configuration
 

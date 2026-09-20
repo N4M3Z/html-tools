@@ -2,12 +2,12 @@
 import base64
 import html
 import mimetypes
-from pathlib import Path
 import re
+from pathlib import Path
 from urllib.parse import unquote, urlsplit
 
-ATTR = re.compile(r'\b(src|href|data-src|data-modal)\s*=\s*([\"\x27])(.*?)\2', re.S)
-CSS_URL = re.compile(r'url\(\s*([\"\x27]?)(.*?)\1\s*\)', re.S)
+ATTR = re.compile(r'\b(src|href|data-src|data-modal)\s*=\s*([\"\x27])(.*?)\2', re.DOTALL)
+CSS_URL = re.compile(r'url\(\s*([\"\x27]?)(.*?)\1\s*\)', re.DOTALL)
 BRIDGE = """<script>
 addEventListener('keydown', e => {
   if (parent === window || e.defaultPrevented) return;
@@ -71,17 +71,17 @@ class Bundler:
                 return re.sub(r'\bstyle=([\"\x27])(.*?)\1',
                               lambda m: 'style=' + m[1] + html.escape(self.css(html.unescape(m[2]), path, chain), quote=True) + m[1], source)
             # Keep scripts intact. Rewrite only HTML tags and CSS blocks.
-            parts = re.split(r'(<script\b[^>]*>.*?</script\s*>)', text, flags=re.S | re.I)
+            parts = re.split(r'(<script\b[^>]*>.*?</script\s*>)', text, flags=re.DOTALL | re.IGNORECASE)
             for index, part in enumerate(parts):
                 if index % 2:
-                    parts[index] = re.sub(r'^<script\b[^>]*>', tag, part, count=1, flags=re.I)
+                    parts[index] = re.sub(r'^<script\b[^>]*>', tag, part, count=1, flags=re.IGNORECASE)
                 else:
                     part = re.sub(r'<!--[\s\S]*?-->|<[^>]+>', tag, part)
                     parts[index] = re.sub(r'(<style\b[^>]*>)(.*?)(</style>)',
-                                          lambda m: m[1] + self.css(m[2], path, chain) + m[3], part, flags=re.S | re.I)
+                                          lambda m: m[1] + self.css(m[2], path, chain) + m[3], part, flags=re.DOTALL | re.IGNORECASE)
             text = ''.join(parts)
             if path.suffix.lower() != '.svg':
-                text = re.sub(r'</body>', lambda _: BRIDGE + '</body>', text, count=1, flags=re.I) if re.search(r'</body>', text, re.I) else text + BRIDGE
+                text = re.sub(r'</body>', lambda _: BRIDGE + '</body>', text, count=1, flags=re.IGNORECASE) if re.search(r'</body>', text, re.IGNORECASE) else text + BRIDGE
             content = text.encode()
         elif path.suffix.lower() == '.css':
             content = self.css(content.decode(), path, chain).encode()

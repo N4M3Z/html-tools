@@ -1,0 +1,5 @@
+name: html-tools
+version: 0.1.0
+type: library
+description: "Browser runtime and Python tooling for HTML pages: annotations, preview frame, bundling, export, and the cast player"
+events: []

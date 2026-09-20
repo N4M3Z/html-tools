@@ -7,7 +7,7 @@ verifiable manifest.
 
 ### Requirement: High contrast
 
-The script SHALL toggle a high-contrast mode with `H` or `?hc=1`, override the page's colour variables and
+The script MUST toggle a high-contrast mode with `H` or `?hc=1`, override the page's colour variables and
 literal SVG colours, inject the same overrides into every same-origin frame, and persist the choice per page
 URL.
 
@@ -18,8 +18,8 @@ URL.
 
 ### Requirement: Fitted preview frame
 
-The script SHALL fit a 1920 × 1080 frame into a host element, keep it fitted on resize, and offer a toggle to
-the window size. The fitted geometry SHALL stay finite for a hidden or invalid host.
+The script MUST fit a 1920 × 1080 frame into a host element, keep it fitted on resize, and offer a toggle to
+the window size. The fitted geometry MUST stay finite for a hidden or invalid host.
 
 #### Scenario: Host is hidden
 
@@ -28,9 +28,9 @@ the window size. The fitted geometry SHALL stay finite for a hidden or invalid h
 
 ### Requirement: Portable asset bundling
 
-The builder SHALL include referenced local assets within the allowed root and preserve preview fragments.
-It SHALL reject missing files, cycles, and references that escape the root.
-External references SHALL remain external.
+The builder MUST include referenced local assets within the allowed root and preserve preview fragments.
+It MUST reject missing files, cycles, and references that escape the root.
+External references MUST remain external.
 
 #### Scenario: Page references a file outside the root
 
@@ -39,10 +39,10 @@ External references SHALL remain external.
 
 ### Requirement: Traceable consumer export
 
-The tool SHALL export the runtime and the Python modules into a chosen directory with a `manifest.json` that
-records a sha256 digest per file. It SHALL stop before writing when a previously exported file has local
+The tool MUST export the runtime and the Python modules into a chosen directory with a `manifest.json` that
+records a sha256 digest per file. It MUST stop before writing when a previously exported file has local
 changes, when an unmanaged file would be overwritten, or when a source file was removed.
-A consumer SHALL be able to pass its own folder list to export its own tree with the same manifest format.
+A consumer MUST be able to pass its own folder list to export its own tree with the same manifest format.
 
 #### Scenario: Consumer changes an exported file
 
@@ -51,7 +51,7 @@ A consumer SHALL be able to pass its own folder list to export its own tree with
 
 ### Requirement: Reproducible verification
 
-The repository SHALL include tests for the tuicr format, the frame geometry, bundling boundaries, and export
+The repository MUST include tests for the tuicr format, the frame geometry, bundling boundaries, and export
 refusals, runnable with the Python standard library and node alone.
 
 #### Scenario: Contributor runs the checks
