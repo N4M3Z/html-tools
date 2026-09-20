@@ -15,7 +15,7 @@ recording behind every GIF is an asciinema cast that already carries the scene t
 
 ### New Capabilities
 
-- `cast-player`: cast playback with position, testable without a browser.
+- `terminal-cast-player`: cast playback with position, testable without a browser.
 
 ## Impact
 

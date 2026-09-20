@@ -18,8 +18,8 @@ second consumer would have copied them from slides. This change gives them one h
 
 ### New Capabilities
 
-- `html-annotation`: element annotations on any HTML page, copied out as tuicr review comments.
-- `html-tooling`: high contrast, fitted preview frame, single-file bundling, and hash-checked export.
+- `html-element-annotation`: element annotations on any HTML page, copied out as tuicr review comments.
+- `html-page-tooling`: high contrast, fitted preview frame, single-file bundling, and hash-checked export.
 
 ### Modified Capabilities
 
