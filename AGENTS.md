@@ -18,11 +18,14 @@
   `window.HTML_ANNOTATE` sets the unit selectors and navigation for a page that is not a deck.
 - `runtime/contrast.js`: `H` toggles `html.hc`, overrides the colour variables, injects the same into frames.
 - `runtime/frame-fit.js`: `SlideFrameFit.geometry` and `attach`, a 1920 × 1080 canvas fitted into a host.
+- `runtime/cast-player.js`: `CastPlayer.attach(host, castText)` plays an asciinema v2 cast with pause, a
+  scrubber, and the `# Scenario:` scene the playhead is in. `parse`, `scenes`, `render`, `controller` are pure.
 - `htmltools/bundle.py`: `Bundler(root).write(source, output)` inlines local assets as data URIs and adds the
   focus bridge that frames use to hand Escape and Tab back to the parent.
 - `htmltools/export.py`: `export(source, destination, folders)` with the manifest check.
 - `htmltools/__main__.py`: the `export` and `bundle` commands.
-- `openspec/`: spec-driven changes. `extract-html-tools-runtime` records the split from slides.
+- `openspec/`: spec-driven changes. `extract-html-tools-runtime` records the split from slides,
+  `cast-player-runtime` the recording player.
 
 Plain browser JavaScript and the Python standard library. No package manager, no build step. Every runtime
 file exports its pure functions through `module.exports` when loaded by node, so the tests need no browser.
@@ -30,7 +33,7 @@ file exports its pure functions through `module.exports` when loaded by node, so
 ## Validation
 
 - `python3 -m unittest discover -s tests -v`: bundling and export.
-- `node --test tests/`: the tuicr format and the frame geometry.
+- `node --test tests/`: the tuicr format, the frame geometry, and the cast player.
 - `openspec validate --all --strict`: the change tree.
 - `prek run --all-files`: the same two test commands, from `.pre-commit-config.yaml`.
 

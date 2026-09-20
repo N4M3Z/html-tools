@@ -63,6 +63,26 @@ Load `runtime/frame-fit.js` before the script that owns the frame. `SlideFrameFi
 scales a 1920 × 1080 frame into the host and keeps it there on resize. The button toggles between the fitted
 canvas and the window size. `geometry(width, height, fitted)` is the pure calculation.
 
+## Play a terminal recording
+
+Load `runtime/cast-player.js` and hand it an asciinema v2 cast as text:
+
+```html
+<div id="proof"></div>
+<script type="text/plain" id="proof-cast">{"version": 2, "width": 100, "height": 30}
+[0.0, "o", "..."]</script>
+<script>CastPlayer.attach(document.getElementById('proof'), document.getElementById('proof-cast').textContent);</script>
+```
+
+The player renders the screen at the playhead, with a Play/Pause button, a scrubber, the elapsed time, and the
+scene the playhead is in. A scene is a line `# Scenario: <title>` in the recording, which is what the
+AcceptanceTesting driver prints at the start of each scene, so a proof names its own chapters. The scene list
+under the screen jumps to a scene. A click on the screen pauses or resumes, as does Space, and a paused
+screen says so in its corner. The arrow keys move between scenes.
+`parse`, `scenes`, `sceneAt`, `render`, and `controller` are the pure parts. The controller takes the clock as
+an argument, so playback is testable without a browser. A GIF cannot pause with position, so a page that shows a
+proof plays the cast and keeps the GIF for places that render images only.
+
 ## Consumers
 
 [slides](https://github.com/N4M3Z/slides) vendors this repository at `vendor/html-tools/` and builds its
