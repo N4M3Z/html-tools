@@ -29,7 +29,17 @@ test('scenes come from the driver marker and sceneAt finds the current one', () 
   assert.equal(sceneAt(list, 2.0), 1);
 });
 
-test('render replays clear, styles, carriage return, and the height cap', () => {
+test('scenes also come from the boxed title rune proof run prints', () => {
+  const boxed = [
+    '{"version": 2, "width": 60, "height": 4}',
+    '[0.0, "o", "\\u001b[2m┌──────────┐\\u001b[0m\\r\\n\\u001b[2m│\\u001b[0m \\u001b[1m1/2 · Head pushed\\u001b[0m \\u001b[2m│\\u001b[0m\\r\\n"]',
+    '[4.0, "o", "\\u001b[2m│\\u001b[0m \\u001b[1m2/2 · Head signed\\u001b[0m \\u001b[2m│\\u001b[0m\\r\\n"]',
+  ].join('\n');
+  const list = scenes(parse(boxed));
+  assert.deepEqual(list.map((s) => [s.time, s.title]), [[0, 'Head pushed'], [4, 'Head signed']]);
+});
+
+test('render replays clear, styles, carriage return, and keeps every line', () => {
   const cast = parse(CAST);
   const early = render(cast, 1.0);
   assert.equal(early.length, 3, 'two lines and the open one');
@@ -40,7 +50,7 @@ test('render replays clear, styles, carriage return, and the height cap', () => 
   const mid = render(cast, 1.5);
   assert.equal(mid[2].map((s) => s.text).join(''), 'progress 2', 'a carriage return rewinds the line');
   const late = render(cast, 9);
-  assert.equal(late.length, 4, 'capped at the terminal height');
+  assert.equal(late.length, 6, 'every line stays, plus the open one; the screen scrolls');
   assert.equal(late[late.length - 2].map((s) => s.text).join(''), 'signed change/x <ok>');
 });
 

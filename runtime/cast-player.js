@@ -1,8 +1,12 @@
 // Play an asciinema v2 cast in the page with pause, resume, a scrubber, and
 // the scene the playhead is in. A scene is a line `# Scenario: <title>` in
-// the recording, the AcceptanceTesting driver's own marker, so a proof names
+// the recording, the AcceptanceTesting driver's own marker, or the boxed
+// `│ N/T · <title> │` line that `rune proof run` prints, so a proof names
 // its own chapters. Pure functions export through module.exports for node;
-// `CastPlayer.attach(host, text)` builds the controls in a browser.
+// `CastPlayer.attach(host, text, options)` builds the controls in a browser:
+// `options.onFrame(time, sceneIndex, scenes)` runs on every frame and
+// `options.chapters === false` hides the built-in scene list, for a page
+// that draws its own. The player it returns seeks with `seek(time, now)`.
 (function (root) {
   'use strict';
   const SGR = /\x1b\[([0-9;]*)m/g;
@@ -18,13 +22,15 @@
       duration: events.length ? events[events.length - 1].time : 0};
   }
 
-  // The scenes of a cast: the time each `# Scenario:` line first appears.
+  // The scenes of a cast: the time each `# Scenario:` line or boxed
+  // `│ N/T · title │` line first appears.
+  const SCENE = /# Scenario: ([^\r\n]+)|│ \d+\/\d+ · ([^│\r\n]+) │/;
   function scenes(cast) {
     const found = [];
     for (const event of cast.events) {
       const plain = event.data.replace(CONTROL, '');
-      const match = plain.match(/# Scenario: ([^\r\n]+)/);
-      if (match) found.push({time: event.time, title: match[1].trim()});
+      const match = plain.match(SCENE);
+      if (match) found.push({time: event.time, title: (match[1] || match[2]).trim()});
     }
     return found;
   }
@@ -66,7 +72,9 @@
       }
       text(data.slice(last));
     }
-    return lines.slice(-cast.height);
+    // Every line stays: the screen scrolls instead of dropping what an
+    // early event printed, so a long output remains readable and searchable.
+    return lines;
   }
 
   // The clock-free controller the browser wraps: play, pause, seek, tick.
@@ -103,7 +111,7 @@
     '.cast .sgr-34{color:#58a6ff}.cast .sgr-35{color:#bc8cff}.cast .sgr-36{color:#39c5cf}.cast .sgr-90{color:#8b949e}' +
     '.cast-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.cast-bar button{font:inherit;padding:4px 10px;cursor:pointer}' +
     '.cast-bar input[type=range]{flex:1;min-width:120px}.cast-scene{font-weight:600}.cast-time{font-variant-numeric:tabular-nums;opacity:.75}' +
-    '.cast-scenes{display:flex;flex-wrap:wrap;gap:6px;margin:0;padding:0;list-style:none}.cast-scenes button{font:inherit;font-size:11px;padding:2px 8px;cursor:pointer}' +
+    '.cast-scenes{display:flex;flex-wrap:wrap;gap:6px;margin:0;padding:0;list-style:none}.cast-scenes[hidden]{display:none}.cast-scenes button{font:inherit;font-size:11px;padding:2px 8px;cursor:pointer}' +
     '.cast-scenes .current button{outline:2px solid currentColor}';
 
   function attach(host, text, options = {}) {
@@ -132,15 +140,20 @@
       screen.innerHTML = render(cast, time).map((line) => line.map((s) =>
         '<span class="' + s.style.join(' ') + '">' + s.text.replace(/&/g, '&amp;').replace(/</g, '&lt;') + '</span>').join('')).join('\n');
       range.value = String(time);
+      range.setAttribute('aria-valuetext', clock(time) + ' of ' + clock(cast.duration));
       timeLabel.textContent = clock(time) + ' / ' + clock(cast.duration);
+      if (player.playing) screen.scrollTop = screen.scrollHeight;
       const index = sceneAt(list, time);
       sceneLabel.textContent = index < 0 ? '' : 'Scene ' + (index + 1) + ' of ' + list.length + ': ' + list[index].title;
       Array.from(sceneList.children).forEach((item, i) => item.classList.toggle('current', i === index));
       toggle.textContent = player.playing ? 'Pause' : (time >= cast.duration ? 'Replay' : 'Play');
       screen.classList.toggle('paused', !player.playing && time > 0 && time < cast.duration);
       screen.title = player.playing ? 'Click to pause' : 'Click to play';
+      // A page that draws its own chapter list follows the playhead here.
+      if (options.onFrame) options.onFrame(time, index, list);
     }
     const player = controller(cast, draw);
+    if (options.chapters === false) sceneList.hidden = true;
     let frame = null;
     function loop() {
       if (frame) return;
@@ -156,6 +169,8 @@
     });
     range.addEventListener('input', () => player.seek(Number(range.value), now()));
     host.addEventListener('keydown', (event) => {
+      // The slider keeps its own arrow keys; the shortcuts belong to the screen.
+      if (event.target === range) return;
       if (event.key === ' ') { event.preventDefault(); player.toggle(now()); loop(); }
       const index = sceneAt(list, player.time);
       if (event.key === 'ArrowRight' && list[index + 1]) player.seek(list[index + 1].time, now());
