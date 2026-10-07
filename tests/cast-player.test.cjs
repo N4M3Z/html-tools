@@ -79,3 +79,40 @@ test('clock formats minutes and seconds', () => {
   assert.equal(clock(0), '0:00');
   assert.equal(clock(65.9), '1:05');
 });
+
+test('attach keeps the playhead moving with no animation frames', () => {
+  // A hidden tab never fires requestAnimationFrame; the clock must not
+  // depend on it. These timers tick by hand and offer no frame at all.
+  const {attach} = require('../runtime/cast-player.js');
+  let clock = 0;
+  const intervals = [];
+  const timers = {now: () => clock, setInterval: (fn) => intervals.push(fn), clearInterval: () => { intervals.length = 0; }};
+  const made = {};
+  const element = (tag) => ({
+    tag, children: [], attributes: {}, listeners: {}, classList: {add() {}, toggle() {}},
+    style: {}, appendChild(child) { this.children.push(child); return child; },
+    addEventListener(name, fn) { this.listeners[name] = fn; }, setAttribute(k, v) { this.attributes[k] = v; }, focus() {},
+    querySelector(sel) { return made[sel] || (made[sel] = element(sel)); },
+    get innerHTML() { return this.html || ''; }, set innerHTML(v) { this.html = v; },
+    get textContent() { return this.text || ''; }, set textContent(v) { this.text = v; },
+  });
+  const doc = {getElementById: () => null, createElement: element, head: element('head')};
+  const host = element('div'); host.ownerDocument = doc;
+  const framed = globalThis.requestAnimationFrame;
+  globalThis.requestAnimationFrame = () => { throw new Error('animation frame requested'); };
+  try {
+    const player = attach(host, CAST, {timers});
+    made['.cast-toggle'].listeners.click();
+    assert.equal(player.playing, true);
+    assert.equal(intervals.length, 1, 'one interval drives the clock');
+    clock = 1200;
+    intervals[0]();
+    assert.ok(player.time > 1.1 && player.time < 1.3, 'the playhead followed the clock: ' + player.time);
+    clock = 9000;
+    intervals[0]();
+    assert.equal(player.playing, false, 'playback stops at the end');
+    assert.equal(intervals.length, 0, 'the interval is cleared at the end');
+  } finally {
+    if (framed) globalThis.requestAnimationFrame = framed; else delete globalThis.requestAnimationFrame;
+  }
+});

@@ -6,7 +6,10 @@
 // `CastPlayer.attach(host, text, options)` builds the controls in a browser:
 // `options.onFrame(time, sceneIndex, scenes)` runs on every frame and
 // `options.chapters === false` hides the built-in scene list, for a page
-// that draws its own. The player it returns seeks with `seek(time, now)`.
+// that draws its own, and `options.timers` supplies `setInterval`,
+// `clearInterval`, and `now` in a test. The player it returns seeks with
+// `seek(time, now)`. The clock is an interval, never an animation frame,
+// because a hidden tab stops frames and the playhead would freeze.
 (function (root) {
   'use strict';
   const SGR = /\x1b\[([0-9;]*)m/g;
@@ -135,7 +138,7 @@
       button.addEventListener('click', () => { player.seek(scene.time, now()); if (!player.playing) player.play(now()); loop(); });
       item.appendChild(button); sceneList.appendChild(item);
     });
-    const now = () => (root.performance || Date).now();
+    const now = () => (options.timers && options.timers.now ? options.timers.now() : (root.performance || Date).now());
     function draw(time) {
       screen.innerHTML = render(cast, time).map((line) => line.map((s) =>
         '<span class="' + s.style.join(' ') + '">' + s.text.replace(/&/g, '&amp;').replace(/</g, '&lt;') + '</span>').join('')).join('\n');
@@ -154,11 +157,16 @@
     }
     const player = controller(cast, draw);
     if (options.chapters === false) sceneList.hidden = true;
-    let frame = null;
+    // The clock is an interval, not requestAnimationFrame: a browser stops
+    // animation frames in a hidden or unfocused tab, and the playhead
+    // would freeze there while the controls still said "playing". Forty
+    // milliseconds is above a screen frame and well below the eye.
+    // `options.timers` replaces the window's interval and clock in a test.
+    const timers = options.timers || root;
+    let timer = null;
     function loop() {
-      if (frame) return;
-      const step = () => { frame = null; if (player.tick(now())) frame = root.requestAnimationFrame(step); };
-      frame = root.requestAnimationFrame(step);
+      if (timer || !player.playing) return;
+      timer = timers.setInterval(() => { if (!player.tick(now())) { timers.clearInterval(timer); timer = null; } }, 40);
     }
     toggle.addEventListener('click', () => { player.toggle(now()); loop(); });
     // The screen itself is the biggest control: a click pauses or resumes,
