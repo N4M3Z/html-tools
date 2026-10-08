@@ -20,26 +20,29 @@
 - `runtime/frame-fit.js`: `SlideFrameFit.geometry` and `attach`, a 1920 × 1080 canvas fitted into a host.
 - `runtime/cast-player.js`: `CastPlayer.attach(host, castText)` plays an asciinema v2 cast with pause, a
   scrubber, and the `# Scenario:` scene the playhead is in. `parse`, `scenes`, `render`, `controller` are pure.
-- `htmltools/bundle.py`: `Bundler(root).write(source, output)` inlines local assets as data URIs and adds the
-  focus bridge that frames use to hand Escape and Tab back to the parent.
-- `htmltools/export.py`: `export(source, destination, folders)` with the manifest check.
-- `htmltools/__main__.py`: the `export` and `bundle` commands.
+- `htmltools/bundle.ts`: `new Bundler(root).write(source, output)` inlines local assets as data URIs, turns a
+  link to a local page into a `data-modal` preview, and adds the focus bridge that frames use to hand Escape
+  and Tab back to the parent.
+- `htmltools/export.ts`: `exportInto(source, destination, folders)` with the manifest check.
+- `htmltools/prose.ts`: `extract(text, title)`, the visible prose as markdown, one block per line, for Vale.
+- `htmltools/cli.ts`: the `export`, `bundle` and `prose` commands, run with `bun htmltools/cli.ts`.
 - `docs/changes/` and `docs/specs/`: the spec-driven change tree (HTML-0001 rule: the native `docs/` root, no `openspec/`).
   `extract-html-tools-runtime` records the split from slides, `cast-player-runtime` the recording player.
 
-Plain browser JavaScript and the Python standard library. No package manager, no build step. Every runtime
-file exports its pure functions through `module.exports` when loaded by node, so the tests need no browser.
+Plain browser JavaScript for the runtime, TypeScript on bun for the tools. No package manager, no build
+step. Every runtime file exports its pure functions through `module.exports` when loaded by node, so the
+tests need no browser.
 
 ## Validation
 
-- `python3 -m unittest discover -s tests -v`: bundling and export.
-- `node --test tests/`: the tuicr format, the frame geometry, and the cast player.
+- `bun test`: bundling, export and prose in `tests/tools.test.ts`, and the node files, the tuicr format, the
+  frame geometry, and the cast player.
 - `rune spec doctor` and `rune spec validate`: the change tree.
-- `prek run --all-files`: the same two test commands, from `.pre-commit-config.yaml`.
+- `prek run --all-files`: the same command, from `.pre-commit-config.yaml`.
 
 ## Operations
 
-- Export into a consumer: `python3 -m htmltools export <consumer>/vendor/html-tools`. Commit the export
+- Export into a consumer: `bun htmltools/cli.ts export <consumer>/vendor/html-tools`. Commit the export
   with its manifest in the consumer.
 - Change a runtime file here, run the tests, then re-export into each consumer. Never edit a vendored copy.
 - jj owns writes; git is a read-only view. Commit with the model identity and a `Co-Authored-By` trailer for

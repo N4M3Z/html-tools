@@ -3,33 +3,44 @@
 Browser runtime and Python tooling for any HTML page: element annotations, high contrast, a fitted preview
 frame, a single-file bundler, and a hash-checked export into consumers.
 
-Plain browser JavaScript and the Python standard library. No package manager, no build step.
+Plain browser JavaScript for the runtime, TypeScript on bun for the tools. No package manager, no build step.
 
 ## Use
 
 Run from this repository:
 
 ```sh
-python3 -m unittest discover -s tests -v
-node --test tests/
+bun test
 ```
 
 Export the runtime and tools into a consumer:
 
 ```sh
-python3 -m htmltools export /path/to/consumer/vendor/html-tools
+bun htmltools/cli.ts export /path/to/consumer/vendor/html-tools
 ```
 
-The export writes `runtime/*.js`, `htmltools/*.py`, and `manifest.json` with a sha256 digest per file.
+The export writes `runtime/*.js`, `htmltools/*.ts`, and `manifest.json` with a sha256 digest per file.
 An update stops if an exported file has local changes. Revert the edit, or keep a copy outside the export.
 
 Bundle one page with every local asset inlined:
 
 ```sh
-python3 -m htmltools bundle page.html page-share.html
+bun htmltools/cli.ts bundle page.html page-share.html
 ```
 
 The page's directory is the asset root. Assets outside it, cycles, `srcset`, and module scripts stop the build.
+A link to a local page becomes a preview, `data-modal="<data URL>" href="#preview"`, because a browser refuses
+to open a data URL in a new tab. The page's own modal, such as the html-slides shell, opens it in place.
+
+Extract a page's visible prose for a linter:
+
+```sh
+bun htmltools/cli.ts prose page.html figures/*.html > prose.md
+vale prose.md
+```
+
+One block per line, one `## id` per section, scripts, styles and code dropped, SVG labels kept, so a Vale
+finding's line maps back to one block.
 
 ## Annotate a page
 
@@ -85,5 +96,5 @@ proof plays the cast and keeps the GIF for places that render images only.
 
 ## Consumers
 
-[slides](https://github.com/N4M3Z/slides) vendors this repository at `vendor/html-tools/` and builds its
-decks on it. A consumer never edits the vendored copy: it changes this repository and re-exports.
+[html-slides](https://github.com/N4M3Z/html-slides) vendors this repository at `vendor/html-tools/` and
+builds its decks on it. A consumer never edits the vendored copy: it changes this repository and re-exports.
