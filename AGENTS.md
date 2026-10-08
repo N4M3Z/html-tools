@@ -14,8 +14,11 @@
 
 ## Architecture
 
-- `runtime/annotate.js`: annotate elements, frame contents, and SVG parts; store per page URL; copy as tuicr.
-  `window.HTML_ANNOTATE` sets the unit selectors and navigation for a page that is not a deck.
+- `runtime/annotate.js`: annotates elements, frame contents and SVG parts, stores notes per page URL and copies
+  them as tuicr. `E` edits text in place and records a SUGGESTION. `window.HTML_ANNOTATE` sets the unit selectors and
+  navigation for a page that is not a deck. The open panel sets `--inset-right` on `<html>`.
+- `runtime/palette.js` and `runtime/pane.js`: the command palette (⌘K, /) and the command pane (C), both
+  over `window.HTML_COMMANDS` through `HtmlCommands.all()`. Pure: `score`, `filter`, `groupCommands`.
 - `runtime/contrast.js`: `H` toggles `html.hc`, overrides the colour variables, injects the same into frames.
 - `runtime/frame-fit.js`: `SlideFrameFit.geometry` and `attach`, a 1920 × 1080 canvas fitted into a host.
 - `runtime/cast-player.js`: `CastPlayer.attach(host, castText)` plays an asciinema v2 cast with pause, a
@@ -55,6 +58,6 @@ tests need no browser.
 2. **Changing the tuicr line format or the storage keys.** `formatTuicr` output is consumed by review tools,
    and the `slides.annotations:` and `slides.contrast:` keys hold notes already saved in browsers.
 3. **Renaming the frame bridge messages.** `slidekit:escape` and `slidekit:focus-parent` are the protocol a
-   consumer's deck script listens for.
+   consumer's deck script listens for. So are `--inset-right` and `window.HTML_COMMANDS`.
 4. **Testing selectors without a browser.** The node tests cover pure functions only. A change to the DOM
    code needs a page opened with `?annotate=1` or `?hc=1`.

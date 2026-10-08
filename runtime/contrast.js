@@ -51,7 +51,7 @@
         if (/input|textarea|select/i.test(e.target.tagName) || e.target.isContentEditable) { return; }
         if (e.key === "h" || e.key === "H") { e.preventDefault(); set(!on); }
     });
-    window.SLIDE_COMMANDS = (window.SLIDE_COMMANDS || []).concat([{ label: "High contrast", hint: "H · for a weak projector", run: function () { set(!on); } }]);
+    window.HTML_COMMANDS = (window.HTML_COMMANDS || []).concat([{ label: "High contrast", hint: "H · for a weak projector", group: "modes", run: function () { set(!on); } }]);
     window.SlideContrast = { on: function (v) { set(v !== false); }, toggle: function () { set(!on); }, active: function () { return on; } };
 
     var saved = null;

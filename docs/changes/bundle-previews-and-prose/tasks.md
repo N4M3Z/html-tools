@@ -14,6 +14,12 @@
 - [x] 2.2 The `prose` command in `cli.ts`
 - [x] 2.3 Test: blocks, escaping, punctuation after inline markup, SVG labels
 
+## 2b. Runtime
+
+- [x] 2b.1 `runtime/palette.js` and `runtime/pane.js` from html-slides, generic over `window.HTML_COMMANDS`
+- [x] 2b.2 `annotate.js`: edit mode, `--inset-right`, its own commands; `contrast.js` on `HTML_COMMANDS`
+- [x] 2b.3 `tests/commands.test.cjs`
+
 ## 3. Documentation
 
 - [x] 3.1 README: `Extract prose`, the bundler note, the consumer renamed to html-slides

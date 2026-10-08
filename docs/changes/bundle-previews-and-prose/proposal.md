@@ -6,6 +6,10 @@ The same deck's prose was linted by extracting its text with a one-off script. B
 
 ## What Changes
 
+- The command palette and the command pane move here from html-slides as page-generic runtime, over one
+  `window.HTML_COMMANDS` list. The annotation script gains an edit mode (`E`): a text change in place is
+  recorded as a SUGGESTION. A side panel (annotation, pane) sets `--inset-right` on `<html>` while open.
+
 - The tools move from Python to TypeScript on bun: `htmltools/bundle.ts`, `export.ts`, `prose.ts`,
   `cli.ts`, with `tests/tools.test.ts` under `bun test`. One language for the runtime and the tools, and the
   consumers' tools, which are TypeScript too, import the vendored modules directly.

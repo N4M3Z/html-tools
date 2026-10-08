@@ -9,7 +9,12 @@
    Targets can live inside a figure: figures load as same-origin iframes, and a click on one crosses into the
    frame document and picks the element under the pointer, so a note lands on "#stamp" or "div › div[2]"
    inside graphics/x.html rather than on the frame as a whole. Parts of an inline SVG work the same way.
-   Elements that cannot host a badge (SVG parts, elements inside frames) get a floating mark drawn over them. */
+   Elements that cannot host a badge (SVG parts, elements inside frames) get a floating mark drawn over them.
+
+   Edit mode (E, while annotating): a click makes the element's text editable in place. Leaving it records the
+   change as a SUGGESTION, "replace … with …", so the copied notes carry the exact words; the page itself is not
+   saved. While the panel is open, `--inset-right` on <html> holds its width and a resize event fires, so a page
+   that fits itself to the window can move aside. The script registers its commands in `window.HTML_COMMANDS`. */
 (function () {
     "use strict";
     var TYPES = [
@@ -102,6 +107,9 @@
         ".annot-bar button{font:inherit;color:inherit;background:none;border:1px solid rgba(242,196,107,.5);border-radius:999px;padding:.35rem .7rem;cursor:pointer;white-space:nowrap}",
         ".annot-bar button:hover{background:rgba(242,196,107,.15)}",
         "body.annot-on .annot-bar{display:flex}",
+        "body.annot-edit .annot-bar [data-act=edit]{background:var(--gold,#F2C46B);color:#070A12}",
+        "body.annot-on.annot-edit " + CFG.active + " " + TARGETS.split(", ").join(",body.annot-on.annot-edit " + CFG.active + " ") + "{cursor:text}",
+        "[contenteditable=true]{outline:2px solid var(--gold,#F2C46B)!important;outline-offset:4px;background:rgba(242,196,107,.06)}",
         "body.annot-on:not(.annot-inner) " + CFG.active + " " + TARGETS.split(", ").map(function (s) { return s + ":hover"; }).join(",body.annot-on:not(.annot-inner) " + CFG.active + " ") + "{outline:1px dashed rgba(242,196,107,.75);outline-offset:6px;cursor:crosshair}",
         "body.annot-on " + CFG.active + " iframe{pointer-events:none}",
         "body.annot-on " + CFG.active + " :is(figure,.diagram,.diagram-frame,svg){cursor:crosshair}",
@@ -146,7 +154,7 @@
 
     var bar = document.createElement("div");
     bar.className = "annot-bar";
-    bar.innerHTML = "<span>annotate</span><span class='count'></span><button data-act='copy' title='copy all notes as tuicr comments'>Copy notes</button><button data-act='shots' title='save pasted screenshots as files'>Screenshots</button><button data-act='clear'>Clear</button><button data-act='off' title='Esc'>Off</button>";
+    bar.innerHTML = "<span>annotate</span><span class='count'></span><button data-act='edit' title='E · click text to edit it in place; the change is recorded as a suggestion'>Edit</button><button data-act='copy' title='copy all notes as tuicr comments'>Copy notes</button><button data-act='shots' title='save pasted screenshots as files'>Screenshots</button><button data-act='clear'>Clear</button><button data-act='off' title='Esc'>Off</button>";
     var pop = document.createElement("div");
     pop.className = "annot-pop";
     pop.innerHTML = "<button class='x' data-act='close' title='close'>✕</button><div class='target'></div><div class='kinds'>" + TYPES.map(function (t) { return "<button data-kind='" + t.id + "' style='--k:" + t.color + "'><small>⌥" + t.key + "</small>" + t.label + "</button>"; }).join("") + "</div><textarea placeholder='the note · paste a screenshot here too'></textarea><div class='shot'></div><div class='hint'>⌥1–⌥4 picks the type · Enter saves · Esc cancels · ⌘V pastes a screenshot</div>";
@@ -167,6 +175,8 @@
     var kind = "note";
     var image = null;
     var editing = null;
+    var editMode = false;
+    var editable = null;
 
     function slideOf(el) { while (el && !(el.matches && el.matches(CFG.unit))) { el = el.parentNode; } return el; }
     function units() { return Array.prototype.slice.call(document.querySelectorAll(CFG.unit)); }
@@ -262,7 +272,7 @@
         bar.querySelector(".count").textContent = records.length + (records.length === 1 ? " note" : " notes");
         panel.innerHTML = records.length ? records.map(function (r) {
             var t = typeOf(r.kind);
-            return "<div class='rec' data-id='" + r.id + "' style='--k:" + t.color + "'><span class='del' data-del='" + r.id + "'>✕</span><span class='n'>" + (records.indexOf(r) + 1) + "</span><b>" + t.label + "</b> <span class='where'>#" + esc(r.slide) + " › " + esc(where(r)) + (r.pin && !r.inner ? " @ " + r.pin.x + "%," + r.pin.y + "%" : "") + "</span><div>" + esc(r.text) + "</div>" + (r.image ? "<img src='" + r.image + "' alt='screenshot'>" : "") + "<div class='edit'>click to edit</div></div>";
+            return "<div class='rec' data-id='" + r.id + "' style='--k:" + t.color + "'><span class='del' data-del='" + r.id + "'>✕</span><span class='n'>" + (records.indexOf(r) + 1) + "</span><b>" + t.label + "</b> <span class='where'>#" + esc(r.slide) + " › " + esc(where(r)) + (r.pin && !r.inner ? " @ " + r.pin.x + "%," + r.pin.y + "%" : "") + "</span><div>" + esc(r.text) + "</div>" + (r.edit ? "<div class='edit'>text edit</div>" : "") + (r.image ? "<img src='" + r.image + "' alt='screenshot'>" : "") + "<div class='edit'>click to edit</div></div>";
         }).join("") : "<div class='empty'>No notes yet. Click an element on the slide, or a part of a figure.</div>";
     }
     function setKind(id) { kind = id; Array.prototype.forEach.call(pop.querySelectorAll("[data-kind]"), function (b) { b.classList.toggle("sel", b.dataset.kind === id); }); }
@@ -329,15 +339,47 @@
         document.body.removeChild(ta);
     }
     var ticker = null;
+    function inset() {
+        var root = document.documentElement;
+        if (on) { root.style.setProperty("--inset-right", Math.round(panel.getBoundingClientRect().width) + "px"); } else { root.style.removeProperty("--inset-right"); }
+        window.dispatchEvent(new Event("resize"));
+    }
+    function setEdit(next) {
+        editMode = !!next; document.body.classList.toggle("annot-edit", editMode);
+        if (!editMode) { finishEdit(); }
+    }
+    function startEdit(el) {
+        finishEdit();
+        editable = { el: el, before: el.innerText };
+        el.setAttribute("contenteditable", "true"); el.focus();
+    }
+    function finishEdit() {
+        if (!editable) { return; }
+        var el = editable.el, before = editable.before, after = el.innerText;
+        el.removeAttribute("contenteditable"); editable = null;
+        if (after.trim() === before.trim()) { return; }
+        var slide = slideOf(el);
+        if (!slide || !slide.id) { return; }
+        var line = function (t) { return t.trim().replace(/\n+/g, " ⏎ "); };
+        records.push({ id: Date.now().toString(36), slide: slide.id, path: pathWithin(slide, el), kind: "suggestion", edit: true,
+            text: "replace “" + line(before) + "” with “" + line(after) + "”", snippet: "", ts: new Date().toISOString() });
+        save(); paint();
+    }
     function setOn(next) {
         on = next; document.body.classList.toggle("annot-on", on);
-        if (!on) { closePop(); document.body.classList.remove("annot-inner"); }
+        if (!on) { closePop(); setEdit(false); document.body.classList.remove("annot-inner"); }
+        inset();
         // Figures animate and frames load late, so floating marks follow their targets while annotating.
         clearInterval(ticker); ticker = on ? setInterval(drawMarks, 400) : null;
         paint();
     }
 
     document.addEventListener("keydown", function (e) {
+        if (e.target.isContentEditable) {
+            e.stopPropagation();
+            if (e.key === "Escape") { e.preventDefault(); e.target.blur(); }
+            return;
+        }
         var typing = e.target === textarea;
         if (typing) {
             e.stopPropagation();
@@ -352,8 +394,10 @@
         if (e.metaKey || e.ctrlKey || e.altKey) { return; }
         if (e.key === "a" || e.key === "A") { if (!/input|textarea/i.test(e.target.tagName)) { e.preventDefault(); e.stopImmediatePropagation(); setOn(!on); } return; }
         if (!on) { return; }
+        if (e.key === "e" || e.key === "E") { e.preventDefault(); e.stopImmediatePropagation(); setEdit(!editMode); return; }
         if (e.key === "Escape") { if (pop.classList.contains("on")) { closePop(); } else { setOn(false); } e.stopImmediatePropagation(); return; }
     }, true);
+    document.addEventListener("focusout", function (e) { if (editable && e.target === editable.el) { setTimeout(finishEdit, 0); } }, true);
     var onPop = function (e) {
         if (e.target.dataset.act === "close") { closePop(); return; }
         var b = e.target.closest("[data-kind]"); if (b) { setKind(b.dataset.kind); textarea.focus(); }
@@ -374,6 +418,7 @@
     var onBar = function (e) {
         var act = e.target.dataset.act;
         if (act === "copy") { copyAll(); }
+        if (act === "edit") { setEdit(!editMode); }
         if (act === "shots") {
             records.filter(function (r) { return r.image; }).forEach(function (r) {
                 var a = document.createElement("a"); a.href = r.image; a.download = "annot-" + r.id + ".png"; document.body.appendChild(a); a.click(); a.remove();
@@ -396,9 +441,11 @@
         if (panel.contains(e.target)) { e.stopPropagation(); onPanel(e); return; }
         var mark = e.target.closest(".annot-mark");
         if (mark) { e.stopPropagation(); editRecord(records.filter(function (x) { return x.id === mark.dataset.id; })[0]); return; }
+        if (editable && editable.el.contains(e.target)) { e.stopPropagation(); return; }
         var loc = locate(e);
         if (!loc) { return; }
         e.preventDefault(); e.stopImmediatePropagation();
+        if (editMode && !loc.inner && !isSvgPart(loc.el) && !loc.el.matches(FIGURES)) { startEdit(loc.el); return; }
         var existing = loc.el.getAttribute && loc.el.getAttribute("data-annot");
         if (existing && !loc.inner) { editRecord(records.filter(function (x) { return x.id === existing; })[0]); return; }
         openPop(loc, e.clientX, e.clientY, null);
@@ -421,6 +468,11 @@
     window.addEventListener("resize", drawMarks);
     window.addEventListener("hashchange", function () { setTimeout(drawMarks, 50); });
 
-    window.SlideAnnotate = { formatTuicr: formatTuicr, records: function () { return records.slice(); }, on: function (v) { setOn(v !== false); } };
+    window.HTML_COMMANDS = (window.HTML_COMMANDS || []).concat([
+        { label: "Annotate mode", hint: "A", group: "modes", run: function () { setOn(!on); } },
+        { label: "Edit text in place", hint: "E · while annotating", group: "modes", run: function () { if (!on) { setOn(true); } setEdit(!editMode); } },
+        { label: "Copy notes", hint: "annotations, tuicr format", group: "modes", run: copyAll }
+    ]);
+    window.SlideAnnotate = { formatTuicr: formatTuicr, records: function () { return records.slice(); }, on: function (v) { setOn(v !== false); }, edit: function (v) { setEdit(v !== false); } };
     if (/[?&]annotate=1/.test(location.search)) { setOn(true); } else { paint(); }
 })();

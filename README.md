@@ -1,7 +1,8 @@
 # html-tools
 
-Browser runtime and Python tooling for any HTML page: element annotations, high contrast, a fitted preview
-frame, a single-file bundler, and a hash-checked export into consumers.
+Browser runtime and tooling for any HTML page: element annotations with an edit mode, a command palette and
+a command pane, high contrast, a fitted preview frame, a terminal-recording player, a single-file bundler, a
+prose extractor for Vale, and a hash-checked export into consumers.
 
 Plain browser JavaScript for the runtime, TypeScript on bun for the tools. No package manager, no build step.
 
@@ -58,6 +59,22 @@ before the script loads:
 ```html
 <script>window.HTML_ANNOTATE = { unit: "article", active: "article.current", goTo: function (i) { /* show unit i */ } };</script>
 ```
+
+Press `E` while annotating, or the Edit button, and a click makes an element's text editable in place. Leaving
+it records the change as a SUGGESTION, `replace “before” with “after”`, so the copied notes carry the exact
+words and an agent applies them to the source. The page itself is not saved. While the panel is open the
+script sets `--inset-right` on `<html>` to the panel's width and fires a resize event, so a page that fits
+itself to the window can move aside.
+
+## Commands, palette and pane
+
+Load `runtime/palette.js`, then `runtime/pane.js`. Commands come from `window.HTML_COMMANDS`: an array of
+`{ label, hint, run, group, here }` entries, or functions that return such arrays when a list opens. Any
+script pushes onto it, before or after these load, and `HtmlCommands.all()` flattens it. The annotation and
+contrast scripts register their own commands under the group `modes`. `⌘K`, `Ctrl+K` or `/` opens the
+palette: type to filter, arrows move, Enter runs, Escape closes. `C` opens the pane: every command, grouped
+by `group` in order of first appearance, always visible while open, with `here: true` entries marked. The
+pane sets `--inset-right` while open, like the annotation panel.
 
 ## High contrast
 
