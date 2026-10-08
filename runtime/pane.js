@@ -52,16 +52,18 @@
         var here = pane.querySelector(".cmd.here");
         if (here) { here.scrollIntoView({ block: "nearest" }); }
     }
+    // The inset is the pane's measured width in px, so a page can subtract it from the window.
     function inset(on) {
         var root = document.documentElement;
-        if (on) { root.style.setProperty("--inset-right", WIDTH); } else { root.style.removeProperty("--inset-right"); }
+        var width = on ? Math.round(pane.getBoundingClientRect().width) : 0;
+        if (width) { root.style.setProperty("--inset-right", width + "px"); } else { root.style.removeProperty("--inset-right"); }
         window.dispatchEvent(new Event("resize"));
     }
     function set(next) {
         open = !!next;
         document.body.classList.toggle("cpane-on", open);
-        inset(open);
         if (open) { render(); }
+        inset(open);
     }
     pane.addEventListener("click", function (e) {
         e.stopPropagation();

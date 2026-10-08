@@ -341,7 +341,8 @@
     var ticker = null;
     function inset() {
         var root = document.documentElement;
-        if (on) { root.style.setProperty("--inset-right", Math.round(panel.getBoundingClientRect().width) + "px"); } else { root.style.removeProperty("--inset-right"); }
+        var width = on ? Math.round(panel.getBoundingClientRect().width) : 0;
+        if (width) { root.style.setProperty("--inset-right", width + "px"); } else { root.style.removeProperty("--inset-right"); }
         window.dispatchEvent(new Event("resize"));
     }
     function setEdit(next) {
@@ -471,7 +472,7 @@
     window.HTML_COMMANDS = (window.HTML_COMMANDS || []).concat([
         { label: "Annotate mode", hint: "A", group: "modes", run: function () { setOn(!on); } },
         { label: "Edit text in place", hint: "E · while annotating", group: "modes", run: function () { if (!on) { setOn(true); } setEdit(!editMode); } },
-        { label: "Copy notes", hint: "annotations, tuicr format", group: "modes", run: copyAll }
+        { label: "Copy notes", hint: "", group: "modes", run: copyAll }
     ]);
     window.SlideAnnotate = { formatTuicr: formatTuicr, records: function () { return records.slice(); }, on: function (v) { setOn(v !== false); }, edit: function (v) { setEdit(v !== false); } };
     if (/[?&]annotate=1/.test(location.search)) { setOn(true); } else { paint(); }
