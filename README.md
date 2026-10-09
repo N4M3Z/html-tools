@@ -43,6 +43,19 @@ vale prose.md
 One block per line, one `## id` per section, scripts, styles and code dropped, SVG labels kept, so a Vale
 finding's line maps back to one block.
 
+Turn a Claude Code event stream into a recording for the cast player:
+
+```sh
+claude -p --verbose --output-format stream-json --allowedTools Agent WebFetch < prompt.txt > stream.jsonl
+bun htmltools/cli.ts cast stream.jsonl run.cast --prompt prompt.txt --max-gap 2 --speed 2
+```
+
+The cast keeps the real order and timing of the run. Each subagent prints in its own colour behind a `track N`
+prefix, a Workflow run's agents come from its progress events, and `# Scenario:` lines name the chapters.
+`--max-gap` shortens silent gaps, `--speed` plays the whole cast faster, and `--trim last-workflow` drops a
+failed first attempt. A sandbox without a pseudo-terminal can still make this recording, where `asciinema rec`
+cannot.
+
 ## Annotate a page
 
 Load `runtime/annotate.js` after the page's own script. Press `A` (or open the page with `?annotate=1`),

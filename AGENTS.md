@@ -28,7 +28,9 @@
   and Tab back to the parent.
 - `htmltools/export.ts`: `exportInto(source, destination, folders)` with the manifest check.
 - `htmltools/prose.ts`: `extract(text, title)`, the visible prose as markdown, one block per line, for Vale.
-- `htmltools/cli.ts`: the `export`, `bundle` and `prose` commands, run with `bun htmltools/cli.ts`.
+- `htmltools/cast.ts`: `convert(streamText, options)`, a Claude Code `stream-json` log as asciicast v2 text with
+  one coloured `track N` prefix per agent and `# Scenario:` chapters, plus `retime` for gap and speed changes.
+- `htmltools/cli.ts`: the `export`, `bundle`, `prose` and `cast` commands, run with `bun htmltools/cli.ts`.
 - `docs/changes/` and `docs/specs/`: the spec-driven change tree (HTML-0001 rule: the native `docs/` root, no `openspec/`).
   `extract-html-tools-runtime` records the split from slides, `cast-player-runtime` the recording player.
 
@@ -38,8 +40,8 @@ tests need no browser.
 
 ## Validation
 
-- `bun test`: bundling, export and prose in `tests/tools.test.ts`, and the node files, the tuicr format, the
-  frame geometry, and the cast player.
+- `bun test`: bundling, export and prose in `tests/tools.test.ts`, the stream converter in `tests/cast.test.ts`,
+  and the node files, the tuicr format, the frame geometry, and the cast player.
 - `rune spec doctor` and `rune spec validate`: the change tree.
 - `prek run --all-files`: the same command, from `.pre-commit-config.yaml`.
 

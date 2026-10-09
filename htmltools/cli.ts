@@ -4,11 +4,24 @@
 //   bun htmltools/cli.ts export /path/to/consumer/vendor/html-tools
 //   bun htmltools/cli.ts bundle page.html page-share.html
 //   bun htmltools/cli.ts prose page.html [more.html] > prose.md
-import { readFileSync } from "node:fs";
+//   bun htmltools/cli.ts cast stream.jsonl out.cast [--prompt prompt.txt] [--max-gap 2] [--speed 2]
+//                             [--cols 120] [--rows 36] [--title "…"] [--trim last-workflow]
+import { readFileSync, writeFileSync } from "node:fs";
 import { basename, dirname, resolve } from "node:path";
 import { Bundler } from "./bundle.ts";
+import { convert } from "./cast.ts";
 import { exportInto } from "./export.ts";
 import { extract } from "./prose.ts";
+
+function flags(args: string[]): { positional: string[]; named: Record<string, string> } {
+  const positional: string[] = [];
+  const named: Record<string, string> = {};
+  for (let i = 0; i < args.length; i++) {
+    if (args[i].startsWith("--")) { named[args[i].slice(2)] = args[i + 1] ?? ""; i++; }
+    else positional.push(args[i]);
+  }
+  return { positional, named };
+}
 
 const ROOT = dirname(dirname(import.meta.path));
 
@@ -28,7 +41,24 @@ export function main(argv: string[]): number {
     console.log(rest.map((page) => extract(readFileSync(page, "utf8"), basename(page))).join("\n"));
     return 0;
   }
-  console.error("usage: bun htmltools/cli.ts export <dest> | bundle <page> <output> | prose <page>...");
+  if (command === "cast") {
+    const { positional, named } = flags(rest);
+    if (positional.length === 2) {
+      const result = convert(readFileSync(positional[0], "utf8"), {
+        prompt: named.prompt ? readFileSync(named.prompt, "utf8") : undefined,
+        maxGap: named["max-gap"] ? Number(named["max-gap"]) : undefined,
+        speed: named.speed ? Number(named.speed) : undefined,
+        cols: named.cols ? Number(named.cols) : undefined,
+        rows: named.rows ? Number(named.rows) : undefined,
+        title: named.title,
+        trim: named.trim === "last-workflow" ? "last-workflow" : "none",
+      });
+      writeFileSync(positional[1], result.cast);
+      console.log(JSON.stringify({ output: positional[1], events: result.events, agents: result.agents, seconds: result.seconds }));
+      return 0;
+    }
+  }
+  console.error("usage: bun htmltools/cli.ts export <dest> | bundle <page> <output> | prose <page>... | cast <stream.jsonl> <out.cast> [flags]");
   return 2;
 }
 
