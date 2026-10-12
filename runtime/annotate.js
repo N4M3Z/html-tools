@@ -470,8 +470,8 @@
     window.addEventListener("hashchange", function () { setTimeout(drawMarks, 50); });
 
     window.HTML_COMMANDS = (window.HTML_COMMANDS || []).concat([
-        { label: "Annotate mode", hint: "A", group: "modes", run: function () { setOn(!on); } },
-        { label: "Edit text in place", hint: "E · while annotating", group: "modes", run: function () { if (!on) { setOn(true); } setEdit(!editMode); } },
+        { label: "Annotate mode", hint: "A", group: "modes", run: function () { setOn(!on); }, state: function () { return on; } },
+        { label: "Edit text in place", hint: "E · while annotating", group: "modes", run: function () { if (!on) { setOn(true); } setEdit(!editMode); }, state: function () { return on && editMode; } },
         { label: "Copy notes", hint: "", group: "modes", run: copyAll }
     ]);
     window.SlideAnnotate = { formatTuicr: formatTuicr, records: function () { return records.slice(); }, on: function (v) { setOn(v !== false); }, edit: function (v) { setEdit(v !== false); } };

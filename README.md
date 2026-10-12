@@ -82,7 +82,8 @@ itself to the window can move aside.
 ## Commands, palette and pane
 
 Load `runtime/palette.js`, then `runtime/pane.js`. Commands come from `window.HTML_COMMANDS`: an array of
-`{ label, hint, run, group, here }` entries, or functions that return such arrays when a list opens. Any
+`{ label, hint, run, group, here, state }` entries, or functions that return such arrays when a list opens. `state`
+is optional: a function that returns whether the command's mode is on, for a host that shows it. Any
 script pushes onto it, before or after these load, and `HtmlCommands.all()` flattens it. The annotation and
 contrast scripts register their own commands under the group `modes`. `⌘K`, `Ctrl+K` or `/` opens the
 palette: type to filter, arrows move, Enter runs, Escape closes. `C` opens the pane: every command, grouped

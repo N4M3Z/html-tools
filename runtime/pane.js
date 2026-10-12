@@ -81,6 +81,6 @@
         if (e.key === "Escape" && open) { e.stopImmediatePropagation(); set(false); }
     }, true);
     window.addEventListener("hashchange", function () { if (open) { setTimeout(render, 30); } });
-    window.HTML_COMMANDS = (window.HTML_COMMANDS || []).concat([{ label: "Command pane", hint: "C", group: "modes", run: function () { set(!open); } }]);
+    window.HTML_COMMANDS = (window.HTML_COMMANDS || []).concat([{ label: "Command pane", hint: "C", group: "modes", run: function () { set(!open); }, state: function () { return open; } }]);
     window.HtmlPane = { open: function () { set(true); }, close: function () { set(false); }, toggle: function () { set(!open); }, refresh: render, width: WIDTH };
 })();
