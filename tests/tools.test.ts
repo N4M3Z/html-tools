@@ -88,8 +88,8 @@ test("export refuses a manifest that lost a source file", () => {
   expect(() => exportInto(join(root, "src"), join(root, "out"))).toThrow(/removed/);
 });
 
-test("prose extracts blocks per section, keeps svg labels, skips code and scripts", () => {
-  const text = extract('<section id="a"><h2>Title &amp; more</h2><p>Body <b>bold</b>.</p><pre>code here</pre>'
+test("prose extracts blocks per section, keeps svg labels, skips code, scripts and kickers", () => {
+  const text = extract('<section id="a"><p class="kicker rise">Part I — See it work</p><h2>Title &amp; more</h2><p>Body <b>bold</b>.</p><pre>code here</pre>'
     + '<svg><text>label</text></svg><script>var x = 1;</script></section><section id="b"><li>x</li><li>Second</li></section>', "t.html");
   expect(text.split("\n")).toEqual(["# t.html", "", "## 1 a", "", "Title & more  ", "Body bold.  ", "label  ", "", "## 2 b", "", "Second  ", ""]);
 });

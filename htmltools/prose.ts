@@ -2,7 +2,8 @@
 //
 // Each `<section>` with an id becomes a `## id` heading; a page without sections is one block. Scripts and
 // styles are dropped, SVG keeps its `<text>` labels, inline markup is flattened, whitespace is collapsed, and
-// lines under three characters are skipped. Every line ends with two spaces so markdown keeps it on its own
+// lines under three characters are skipped. A `.kicker` paragraph is a navigation label, not prose, and is
+// dropped. Every line ends with two spaces so markdown keeps it on its own
 // line and a finding's line number maps back to one block.
 import { unescapeHtml } from "./bundle.ts";
 
@@ -17,6 +18,7 @@ export function blocks(fragment: string): string[] {
   fragment = fragment.replace(/<(script|style)\b[\s\S]*?<\/\1>/gi, "");
   fragment = fragment.replace(/<svg[\s\S]*?<\/svg>/g, (m) => [...m.matchAll(/<text[^>]*>(.*?)<\/text>/gs)].map((t) => `<p>${t[1]}</p>`).join(" "));
   fragment = fragment.replace(/<(?:pre|code)\b[\s\S]*?<\/(?:pre|code)>/gi, "");
+  fragment = fragment.replace(/<p class="kicker[^"]*"[^>]*>[\s\S]*?<\/p>/g, "");
   let found = [...fragment.matchAll(BLOCK)].map((m) => clean(m[1]));
   if (!found.length) found = [clean(fragment)];
   return found.filter((line) => line.length > 2);
