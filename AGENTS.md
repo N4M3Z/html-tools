@@ -20,6 +20,10 @@
 - `runtime/palette.js` and `runtime/pane.js`: the command palette (⌘K, /) and the command pane (C), both
   over `window.HTML_COMMANDS` through `HtmlCommands.all()`. Pure: `score`, `filter`, `groupCommands`.
 - `runtime/contrast.js`: `H` toggles `html.hc`, overrides the colour variables, injects the same into frames.
+  The set comes from `SlideTheme.contrast()` when a theme brings one, else the black constants.
+- `runtime/theme.js`: `T` cycles Night, Day and Dusk on `html[data-theme]`, injects the variables into frames,
+  repaints Night-palette SVG literals. Pure: `parse`, `paint`, `deckCss`, `frameCss`, `contrastSet`, `pick`, `next`.
+  Load it before `contrast.js`.
 - `runtime/frame-fit.js`: `SlideFrameFit.geometry` and `attach`, a 1920 × 1080 canvas fitted into a host.
 - `runtime/cast-player.js`: `CastPlayer.attach(host, castText)` plays an asciinema v2 cast with pause, a
   scrubber, and the `# Scenario:` scene the playhead is in. `parse`, `scenes`, `render`, `controller` are pure.
@@ -58,8 +62,8 @@ tests need no browser.
 1. **Editing a vendored copy.** The export refuses the next update and the fix is lost on re-export. Edit
    here, re-export.
 2. **Changing the tuicr line format or the storage keys.** `formatTuicr` output is consumed by review tools,
-   and the `slides.annotations:` and `slides.contrast:` keys hold notes already saved in browsers.
+   and the `slides.annotations:`, `slides.contrast:` and `slides.theme:` keys hold state already saved in browsers.
 3. **Renaming the frame bridge messages.** `slidekit:escape` and `slidekit:focus-parent` are the protocol a
    consumer's deck script listens for. So are `--inset-right` and `window.HTML_COMMANDS`.
 4. **Testing selectors without a browser.** The node tests cover pure functions only. A change to the DOM
-   code needs a page opened with `?annotate=1` or `?hc=1`.
+   code needs a page opened with `?annotate=1`, `?hc=1` or `?theme=day`.

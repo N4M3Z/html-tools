@@ -96,8 +96,24 @@ Load `runtime/contrast.js`. Press `H` or open the page with `?hc=1`. The ground 
 muted and line colours brighter, accents brighter. The page's colour variables (`--void`, `--ink`, `--mut`,
 `--faint`, `--line`, `--cyan`, `--gold`, `--red`, `--green`) are overridden on `html.hc`, and inline SVG art
 with the same literal colours is lifted. The overrides are injected into every same-origin frame, now and as
-frames load. The choice persists per page URL. The script also adds a "High contrast" entry to
-`window.SLIDE_COMMANDS` for a command palette that reads it.
+frames load, and the frame's root gets the `hc` class. The choice persists per page URL. The script also adds a
+"High contrast" entry to `window.HTML_COMMANDS` for a command palette that reads it. With `theme.js` loaded, the
+active theme supplies the set, so high contrast on a light theme stays light.
+
+## Themes
+
+Load `runtime/theme.js` before `contrast.js`. Three themes: Night, the page's own dark palette and the default,
+Day, a light ground, and Dusk, a slate ground. Press `T` to cycle them, open the page with `?theme=day`, or
+run "Theme · Day" from the palette, which shows the active theme as on. The choice persists per page URL under
+`slides.theme:<path>`. With nothing saved, Night applies, whatever the system's `prefers-color-scheme` says.
+
+A theme overrides the colour variables on `html[data-theme="…"]` and injects them into every same-origin frame.
+Night injects nothing, so a page on Night renders as it did without the script. Literal colours of the Night
+palette in SVG `fill`, `stroke` and `stop-color` attributes repaint as the matching variable at the same alpha,
+with zero specificity, so a stylesheet rule that paints the element still wins. Brand colours stay. Each theme
+names its own high-contrast set, which `contrast.js` reads through `SlideTheme.contrast()`: Day turns white with
+black ink, and Dusk keeps the black set. The two toggles compose in any order. Floating panels such as the
+palette read `--surface` for their ground, with `#0b1220` as the fallback.
 
 ## Fit a preview frame
 
