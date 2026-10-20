@@ -151,16 +151,19 @@
         if (e.key === "t" || e.key === "T") { e.preventDefault(); set(next(current)); }
     });
     var names = THEMES.map(function (t) { return t.name; });
-    window.HTML_COMMANDS = (window.HTML_COMMANDS || []).concat([{ label: "Next theme", hint: "T · " + names.join(", "), group: "modes", run: function () { set(next(current)); } }]
+    // The commands form one choice set, "theme": a settings panel can draw it as a single segmented control, one
+    // option per theme, with the cycle command's key beside it.
+    window.HTML_COMMANDS = (window.HTML_COMMANDS || []).concat([{ label: "Next theme", hint: "T · " + names.join(", "), group: "display", choice: "theme", run: function () { set(next(current)); } }]
         .concat(THEMES.map(function (t) {
-            return { label: "Theme · " + t.label, group: "modes", run: function () { set(t.name); }, state: function () { return current === t.name; } };
+            return { label: "Theme · " + t.label, group: "display", choice: "theme", value: t.name, option: t.label, run: function () { set(t.name); }, state: function () { return current === t.name; } };
         })));
     window.SlideTheme = {
         names: function () { return names.slice(); },
         active: function () { return current; },
         set: set,
         next: function () { set(next(current)); },
-        contrast: function () { return contrastSet(find(current)); }
+        contrast: function () { return contrastSet(find(current)); },
+        swatches: function () { return THEMES.map(function (t) { return { name: t.name, label: t.label, ground: t.vars["--void"], ink: t.vars["--ink"], accent: t.vars["--gold"] }; }); }
     };
 
     var saved = null;
