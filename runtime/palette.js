@@ -4,7 +4,8 @@
    here }` or functions that return such arrays when the palette opens. A page, or another runtime file, pushes
    onto it before or after this script loads. `HtmlCommands.all()` flattens the array, and the command pane
    (pane.js) and a deck's help overlay read the same list. `window.SLIDE_COMMANDS` is read too, for pages that
-   registered under the older name. */
+   registered under the older name. A command may declare `icon`, a glyph or inline SVG; a host such as the
+   html-slides runtime then shows it as a corner button. */
 (function () {
     "use strict";
     var registry = function () {

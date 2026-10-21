@@ -470,7 +470,8 @@
     window.addEventListener("hashchange", function () { setTimeout(drawMarks, 50); });
 
     window.HTML_COMMANDS = (window.HTML_COMMANDS || []).concat([
-        { label: "Annotate mode", hint: "A", group: "review", run: function () { setOn(!on); }, state: function () { return on; } },
+        { label: "Annotate mode", hint: "A", group: "review", run: function () { setOn(!on); }, state: function () { return on; },
+            icon: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 3.5h11v7h-6l-3 2.5v-2.5h-2z"/><path d="M5.5 6.2h5M5.5 8.2h3"/></svg>' },
         { label: "Edit text in place", hint: "E · while annotating", group: "review", run: function () { if (!on) { setOn(true); } setEdit(!editMode); }, state: function () { return on && editMode; } },
         { label: "Copy notes", hint: "", group: "review", run: copyAll }
     ]);
