@@ -1,0 +1,586 @@
+{
+  "schema": "html-tools-template-pack-validation/v1",
+  "checked_at_utc": "2026-10-30T09:35:30.670928+00:00",
+  "authoring": "COMPLETE_H1_CLOSED_BOUNDED_COORDINATOR_BROWSER_COVERAGE",
+  "scope": "Additive template pack only. No real consumer export, native presentation import, or external project mutation.",
+  "changed_files": [
+    "README.md",
+    "htmltools/export.ts",
+    "runtime/model-playback.js",
+    "runtime/presentation-view.js",
+    "tests/model-playback.test.cjs",
+    "tests/presentation-view.test.cjs",
+    "tests/templates.test.ts",
+    "templates/README.md",
+    "templates/demo.js",
+    "templates/derived-build.svg",
+    "templates/editable-master.svg",
+    "templates/evidence.html",
+    "templates/hash-manifest.ts",
+    "templates/index.html",
+    "templates/iterations.html",
+    "templates/manifest.json",
+    "templates/model-readout.html",
+    "templates/object-index.json",
+    "templates/preview.svg",
+    "templates/provenance.html",
+    "templates/source.svg",
+    "templates/templates.css",
+    "docs/changes/presentation-template-pack/design.md",
+    "docs/changes/presentation-template-pack/proposal.md",
+    "docs/changes/presentation-template-pack/record.md",
+    "docs/changes/presentation-template-pack/specs/html-page-tooling/spec.md",
+    "docs/changes/presentation-template-pack/specs/reusable-presentation-templates/spec.md",
+    "docs/changes/presentation-template-pack/tasks.md",
+    "docs/changes/presentation-template-pack/validation.json",
+    "tests/template-annotation.test.cjs"
+  ],
+  "file_digests": [
+    {
+      "path": "README.md",
+      "sha256": "272c3dca66013ccf1483d5ca6488bfdd074ea74bf71f0beb2883108a08632b29",
+      "bytes": 9275
+    },
+    {
+      "path": "htmltools/export.ts",
+      "sha256": "dd66e6eb7702bd4c02d65fa3f0a642350d3ee064bf91e0768a0c6124cbca3e56",
+      "bytes": 2847
+    },
+    {
+      "path": "runtime/model-playback.js",
+      "sha256": "3888e1bfab911000b3e8fa432bf5c2c9156c86365f522b931681da888045905d",
+      "bytes": 4988
+    },
+    {
+      "path": "runtime/presentation-view.js",
+      "sha256": "1b8dd2f4a73cf8afebf8989d5b8117cd8a85335ba946683502b8e665bfdb86fb",
+      "bytes": 2034
+    },
+    {
+      "path": "tests/model-playback.test.cjs",
+      "sha256": "d7c69cd04b3f3dabef1994aab834044a641c05d45866647a03ff25ef287236a7",
+      "bytes": 7087
+    },
+    {
+      "path": "tests/presentation-view.test.cjs",
+      "sha256": "4d9b244f6232391006551e66f1277243c82decc818747990f2c12654acf5ec0d",
+      "bytes": 2916
+    },
+    {
+      "path": "tests/templates.test.ts",
+      "sha256": "737db0200f89460426aecf5ffc1907ee591f8b6ef9b7caa8a28dc9b3b88ff531",
+      "bytes": 7383
+    },
+    {
+      "path": "templates/README.md",
+      "sha256": "56f5368946f90c7dbeac263a5d222b0340fb07a65af0766292342151b2435a67",
+      "bytes": 8986
+    },
+    {
+      "path": "templates/demo.js",
+      "sha256": "0c0b6478656a214bd3483fb44cf72045affddffe2b40deac053dc1410f490d0b",
+      "bytes": 10907
+    },
+    {
+      "path": "templates/derived-build.svg",
+      "sha256": "df75638deda552c0df8057b5fe5223cb614686cb1ae96dc93cb43431ae330aec",
+      "bytes": 572
+    },
+    {
+      "path": "templates/editable-master.svg",
+      "sha256": "0736a206244e89b034bedde9f6060fdec738f1a5aa0c8c42d98e056f3780100c",
+      "bytes": 659
+    },
+    {
+      "path": "templates/evidence.html",
+      "sha256": "31cf862037874601e4c377679f87984bd511de8c2aa81ab53623c323f48c7530",
+      "bytes": 3179
+    },
+    {
+      "path": "templates/hash-manifest.ts",
+      "sha256": "403370de246f5c5a40effeca09a433c69d50d472c803184949eb09737723e3a7",
+      "bytes": 1196
+    },
+    {
+      "path": "templates/index.html",
+      "sha256": "11916e6bea95a35c127decd20ba2ce55f7820238daeeab8cfb44304feb6fd4b4",
+      "bytes": 1862
+    },
+    {
+      "path": "templates/iterations.html",
+      "sha256": "805c18e8dc0a0475b494fad365b70c652870ced7ede1d969ad6b4a6482aa3198",
+      "bytes": 3055
+    },
+    {
+      "path": "templates/manifest.json",
+      "sha256": "f51e760ba7ddb0b2b3083d41df01f14270e7114993ab6503fcd704e617da0d5e",
+      "bytes": 1525
+    },
+    {
+      "path": "templates/model-readout.html",
+      "sha256": "82cb4ef995ed36e2ba587938b2cc0fe5761e26c9fa96eb16b257557d865a513b",
+      "bytes": 2819
+    },
+    {
+      "path": "templates/object-index.json",
+      "sha256": "d0a664ddc33895035e701f3a8ce426861fd2d3e37d8fb7c5748be1e4ce94c1db",
+      "bytes": 3066
+    },
+    {
+      "path": "templates/preview.svg",
+      "sha256": "6d8b1c480f6f448901725e724aa0d00b8b299af9962e57e83e5a4ce3217c959b",
+      "bytes": 565
+    },
+    {
+      "path": "templates/provenance.html",
+      "sha256": "e9dac9b6f3c969e7cb13f9542f91ce3be7ded9b0290eea1e99068354300fa25c",
+      "bytes": 3359
+    },
+    {
+      "path": "templates/source.svg",
+      "sha256": "c29c9413c432493eb9d2c7c45161414fdf62a1a98c75997065186af97465b297",
+      "bytes": 571
+    },
+    {
+      "path": "templates/templates.css",
+      "sha256": "11b5d1ae1d9fa1a44d100f7079c045a23d4e4f9a47aaa924ff7560f0a454a23e",
+      "bytes": 3617
+    },
+    {
+      "path": "docs/changes/presentation-template-pack/design.md",
+      "sha256": "2ff11bce1e4b937146ade98aa6e5167e947b1cce6727d39456a574ce5400dd4f",
+      "bytes": 2170
+    },
+    {
+      "path": "docs/changes/presentation-template-pack/proposal.md",
+      "sha256": "b7cebafd6fa89619c02a89a6c6bbdf1150c0a9cfd0fd0a8f3401e54da0b04c6b",
+      "bytes": 1007
+    },
+    {
+      "path": "docs/changes/presentation-template-pack/record.md",
+      "sha256": "aa5cc396ed743231e4f42ee149a4432726bf68ac96bb2ea948bee11ed06cca99",
+      "bytes": 5953
+    },
+    {
+      "path": "docs/changes/presentation-template-pack/specs/html-page-tooling/spec.md",
+      "sha256": "c0e2c949165710b5cccbdce65823633f4b3fa44f4cff6be26570ae066b4cd067",
+      "bytes": 1055
+    },
+    {
+      "path": "docs/changes/presentation-template-pack/specs/reusable-presentation-templates/spec.md",
+      "sha256": "7a260d0d79687e296d1e1b609ff8835db3d307c368e3ce8f3e4776897a500ac2",
+      "bytes": 3257
+    },
+    {
+      "path": "docs/changes/presentation-template-pack/tasks.md",
+      "sha256": "caf84b78e0d7093bbc6614e838d42ec62ab0c9e6d24bd8a529a9410bfcbc5129",
+      "bytes": 625
+    },
+    {
+      "path": "tests/template-annotation.test.cjs",
+      "sha256": "c744cd22dcf207b2f1e62f452a34649dc32aae22bbb6d0c845ce4b35c655a7b7",
+      "bytes": 5184
+    }
+  ],
+  "digest_scope": "Every changed file except this receipt itself.",
+  "preexisting_modified_files": [
+    {
+      "path": "runtime/annotate.js",
+      "initial_sha256": "5ebabec5bf7a71beed24c1bd0c1124ee555e5662d8f47bde4d8b357387c01fc5",
+      "final_sha256": "5ebabec5bf7a71beed24c1bd0c1124ee555e5662d8f47bde4d8b357387c01fc5",
+      "written_by_this_task": false
+    },
+    {
+      "path": "tests/annotate.test.cjs",
+      "initial_sha256": "b367cef8004b0600ea268734bc91f8b6956cb3f18a4cb76b55cdfc4298a9ecbe",
+      "final_sha256": "b367cef8004b0600ea268734bc91f8b6956cb3f18a4cb76b55cdfc4298a9ecbe",
+      "written_by_this_task": false
+    }
+  ],
+  "demo_urls_relative_to_root": [
+    "templates/index.html?lang=en",
+    "templates/model-readout.html?lang=en",
+    "templates/evidence.html?lang=cs",
+    "templates/iterations.html?lang=en&version=current",
+    "templates/provenance.html?lang=cs"
+  ],
+  "validation": {
+    "bun test": {
+      "passed": 62,
+      "failed": 0,
+      "expectations": 312,
+      "test_files": 11
+    },
+    "rune spec validate presentation-template-pack": "PASS",
+    "rune spec doctor": "BLOCKED_BY_PREEXISTING_MISSING_DELTA_bundle-previews-and-prose",
+    "rune spec validate": "BLOCKED_BY_PREEXISTING_MISSING_DELTA_bundle-previews-and-prose",
+    "held_slider_attach_fakeRAF": "PASS_40_ALTERNATING_INPUT_FRAME_CYCLES",
+    "browser_validation": "PASS_BOUNDED_COORDINATOR_BROWSER_CHECKS",
+    "cli_export": "PASS_TEMPORARY_DIRECTORIES_ONLY",
+    "consumer_modified_template_refusal": "PASS_BEFORE_ANY_WRITE",
+    "unmanaged_template_collision_refusal": "PASS_BEFORE_ANY_WRITE",
+    "provenance_actual_hashes": "PASS",
+    "native_package_edit_refusal": "PASS",
+    "static_annotation_language_context": "PASS_4_REAL_DEMO_AND_CANONICAL_ADDRESS_REGRESSIONS",
+    "tests_rerun_during_finalization": false,
+    "reduced_motion_browser": "NOT_RUN_UNIT_EVIDENCE_ONLY",
+    "fullscreen_rejection_browser": "NOT_RUN_UNIT_EVIDENCE_ONLY",
+    "browser_frame_rate": "NOT_MEASURED"
+  },
+  "limitations": [
+    "Browser coverage is limited to the coordinator scenarios in the supplied evidence receipt.",
+    "Reduced motion and fullscreen rejection have code/unit evidence only. Native Escape/focus restoration is not claimed as browser-tested here.",
+    "Held-drag observations show an advancing clock and amplitude. They do not measure FPS or smooth rendering.",
+    "The illustrative object index is partial. Text/layout extraction does not prove a full lossless object graph.",
+    "No real presentation importer is implemented.",
+    "The examples export as a directory tree; the existing bundler root guard is unchanged."
+  ],
+  "actions": {
+    "committed": false,
+    "pushed": false,
+    "permissions_changed": false,
+    "consumer_exports_modified": false,
+    "annotation_implementation_modified": false,
+    "external_projects_modified": false
+  },
+  "history": [
+    {
+      "checked_at_utc": "2026-10-30T09:05:36.095203+00:00",
+      "receipt_sha256": "b673704cd3b8dc7e98e63306b8ddc1c98c59a2962848cc47bd61cd022204c872",
+      "authoring": "COMPLETE_AWAITING_PARENT_BROWSER_VALIDATION",
+      "validation": {
+        "bun test": {
+          "passed": 58,
+          "failed": 0,
+          "expectations": 312,
+          "test_files": 10
+        },
+        "rune spec validate presentation-template-pack": "PASS",
+        "rune spec doctor": "BLOCKED_BY_PREEXISTING_MISSING_DELTA_bundle-previews-and-prose",
+        "rune spec validate": "BLOCKED_BY_PREEXISTING_MISSING_DELTA_bundle-previews-and-prose",
+        "held_slider_attach_fakeRAF": "PASS_40_ALTERNATING_INPUT_FRAME_CYCLES",
+        "browser_validation": "PARENT_RESPONSIBILITY_NOT_RUN_HERE",
+        "cli_export": "PASS_TEMPORARY_DIRECTORIES_ONLY",
+        "consumer_modified_template_refusal": "PASS_BEFORE_ANY_WRITE",
+        "unmanaged_template_collision_refusal": "PASS_BEFORE_ANY_WRITE",
+        "provenance_actual_hashes": "PASS",
+        "native_package_edit_refusal": "PASS"
+      },
+      "file_digests": [
+        {
+          "path": "README.md",
+          "sha256": "272c3dca66013ccf1483d5ca6488bfdd074ea74bf71f0beb2883108a08632b29",
+          "bytes": 9275
+        },
+        {
+          "path": "htmltools/export.ts",
+          "sha256": "dd66e6eb7702bd4c02d65fa3f0a642350d3ee064bf91e0768a0c6124cbca3e56",
+          "bytes": 2847
+        },
+        {
+          "path": "runtime/model-playback.js",
+          "sha256": "3888e1bfab911000b3e8fa432bf5c2c9156c86365f522b931681da888045905d",
+          "bytes": 4988
+        },
+        {
+          "path": "runtime/presentation-view.js",
+          "sha256": "1b8dd2f4a73cf8afebf8989d5b8117cd8a85335ba946683502b8e665bfdb86fb",
+          "bytes": 2034
+        },
+        {
+          "path": "tests/model-playback.test.cjs",
+          "sha256": "d7c69cd04b3f3dabef1994aab834044a641c05d45866647a03ff25ef287236a7",
+          "bytes": 7087
+        },
+        {
+          "path": "tests/presentation-view.test.cjs",
+          "sha256": "4d9b244f6232391006551e66f1277243c82decc818747990f2c12654acf5ec0d",
+          "bytes": 2916
+        },
+        {
+          "path": "tests/templates.test.ts",
+          "sha256": "737db0200f89460426aecf5ffc1907ee591f8b6ef9b7caa8a28dc9b3b88ff531",
+          "bytes": 7383
+        },
+        {
+          "path": "templates/README.md",
+          "sha256": "85602a326eae66bb789bb72b748ab89966057beb68c6d396d9fb621db0395b41",
+          "bytes": 8689
+        },
+        {
+          "path": "templates/demo.js",
+          "sha256": "2f112331659b2ca786f6bcee6bc0cb33199bb1a1384fbbeb4609414b2501fcf8",
+          "bytes": 10349
+        },
+        {
+          "path": "templates/derived-build.svg",
+          "sha256": "df75638deda552c0df8057b5fe5223cb614686cb1ae96dc93cb43431ae330aec",
+          "bytes": 572
+        },
+        {
+          "path": "templates/editable-master.svg",
+          "sha256": "0736a206244e89b034bedde9f6060fdec738f1a5aa0c8c42d98e056f3780100c",
+          "bytes": 659
+        },
+        {
+          "path": "templates/evidence.html",
+          "sha256": "4b6d0fe5e0f4cfc496670245178e1eb67664cace7f260b5d60d165ce9b79c413",
+          "bytes": 3176
+        },
+        {
+          "path": "templates/hash-manifest.ts",
+          "sha256": "403370de246f5c5a40effeca09a433c69d50d472c803184949eb09737723e3a7",
+          "bytes": 1196
+        },
+        {
+          "path": "templates/index.html",
+          "sha256": "11916e6bea95a35c127decd20ba2ce55f7820238daeeab8cfb44304feb6fd4b4",
+          "bytes": 1862
+        },
+        {
+          "path": "templates/iterations.html",
+          "sha256": "805c18e8dc0a0475b494fad365b70c652870ced7ede1d969ad6b4a6482aa3198",
+          "bytes": 3055
+        },
+        {
+          "path": "templates/manifest.json",
+          "sha256": "9cdb931ef8ec128e9b7c651d3f6fb86dec09ff2e5fa36dcfe4f1d2d1f048d772",
+          "bytes": 1525
+        },
+        {
+          "path": "templates/model-readout.html",
+          "sha256": "82cb4ef995ed36e2ba587938b2cc0fe5761e26c9fa96eb16b257557d865a513b",
+          "bytes": 2819
+        },
+        {
+          "path": "templates/object-index.json",
+          "sha256": "d0a664ddc33895035e701f3a8ce426861fd2d3e37d8fb7c5748be1e4ce94c1db",
+          "bytes": 3066
+        },
+        {
+          "path": "templates/preview.svg",
+          "sha256": "6d8b1c480f6f448901725e724aa0d00b8b299af9962e57e83e5a4ce3217c959b",
+          "bytes": 565
+        },
+        {
+          "path": "templates/provenance.html",
+          "sha256": "87f4c7760dd8cb9880bf3b925a892a829ee4d22cba73a9ee8d482a2eb6f2fb1a",
+          "bytes": 3356
+        },
+        {
+          "path": "templates/source.svg",
+          "sha256": "c29c9413c432493eb9d2c7c45161414fdf62a1a98c75997065186af97465b297",
+          "bytes": 571
+        },
+        {
+          "path": "templates/templates.css",
+          "sha256": "11b5d1ae1d9fa1a44d100f7079c045a23d4e4f9a47aaa924ff7560f0a454a23e",
+          "bytes": 3617
+        },
+        {
+          "path": "docs/changes/presentation-template-pack/design.md",
+          "sha256": "2ff11bce1e4b937146ade98aa6e5167e947b1cce6727d39456a574ce5400dd4f",
+          "bytes": 2170
+        },
+        {
+          "path": "docs/changes/presentation-template-pack/proposal.md",
+          "sha256": "b7cebafd6fa89619c02a89a6c6bbdf1150c0a9cfd0fd0a8f3401e54da0b04c6b",
+          "bytes": 1007
+        },
+        {
+          "path": "docs/changes/presentation-template-pack/record.md",
+          "sha256": "e47fdbc40f8dc12e435aa0f3fdd7fd5cfe9df92a4650edd0807b806eb7a4e7e3",
+          "bytes": 2802
+        },
+        {
+          "path": "docs/changes/presentation-template-pack/specs/html-page-tooling/spec.md",
+          "sha256": "c0e2c949165710b5cccbdce65823633f4b3fa44f4cff6be26570ae066b4cd067",
+          "bytes": 1055
+        },
+        {
+          "path": "docs/changes/presentation-template-pack/specs/reusable-presentation-templates/spec.md",
+          "sha256": "9f8dd744d250f978a43ce893ee49d3e861cad3d0444b0a587c54415c30b149fe",
+          "bytes": 2997
+        },
+        {
+          "path": "docs/changes/presentation-template-pack/tasks.md",
+          "sha256": "5f7ce5e418aab513d8bdb06a1658d1977ff08370f53abf4b8eaead3df0966e60",
+          "bytes": 535
+        }
+      ],
+      "history_correction": {
+        "reason": "A later update mutated a shared validation object.",
+        "test_counts": "Initial run restored to 58 tests across 10 files; final H1 run remains 62 tests across 11 files.",
+        "basis": "Earlier recorded command outputs; no repeated test run."
+      }
+    },
+    {
+      "phase": "H1 code correction before coordinator browser recheck",
+      "checked_at_utc": "2026-10-30T09:28:13.611991+00:00",
+      "receipt_sha256": "32eac8f592e2df455944c22f4c32f000f546583932e4ed6a2cf06c9cc6de86ba",
+      "authoring": "H1_FIXED_AWAITING_PARENT_BROWSER_ANNOTATION_RECHECK",
+      "validation": {
+        "bun test": {
+          "passed": 62,
+          "failed": 0,
+          "expectations": 312,
+          "test_files": 11
+        },
+        "rune spec validate presentation-template-pack": "PASS",
+        "rune spec doctor": "BLOCKED_BY_PREEXISTING_MISSING_DELTA_bundle-previews-and-prose",
+        "rune spec validate": "BLOCKED_BY_PREEXISTING_MISSING_DELTA_bundle-previews-and-prose",
+        "held_slider_attach_fakeRAF": "PASS_40_ALTERNATING_INPUT_FRAME_CYCLES",
+        "browser_validation": "PARTIAL_PARENT_REPORTED_PASS;H1_ANNOTATION_RECHECK_PENDING",
+        "cli_export": "PASS_TEMPORARY_DIRECTORIES_ONLY",
+        "consumer_modified_template_refusal": "PASS_BEFORE_ANY_WRITE",
+        "unmanaged_template_collision_refusal": "PASS_BEFORE_ANY_WRITE",
+        "provenance_actual_hashes": "PASS",
+        "native_package_edit_refusal": "PASS",
+        "static_annotation_language_context": "PASS_4_REAL_DEMO_AND_CANONICAL_ADDRESS_REGRESSIONS"
+      }
+    }
+  ],
+  "h1_correction": {
+    "review_reference": "Coordinator-supplied independent Astra review H1, 2026-10-30",
+    "scope": "Static evidence/provenance unit language identity and canonical repaint integration only.",
+    "changed_existing_files": [
+      {
+        "path": "templates/README.md",
+        "before_sha256": "85602a326eae66bb789bb72b748ab89966057beb68c6d396d9fb621db0395b41",
+        "after_sha256": "56f5368946f90c7dbeac263a5d222b0340fb07a65af0766292342151b2435a67"
+      },
+      {
+        "path": "templates/demo.js",
+        "before_sha256": "2f112331659b2ca786f6bcee6bc0cb33199bb1a1384fbbeb4609414b2501fcf8",
+        "after_sha256": "0c0b6478656a214bd3483fb44cf72045affddffe2b40deac053dc1410f490d0b"
+      },
+      {
+        "path": "templates/evidence.html",
+        "before_sha256": "4b6d0fe5e0f4cfc496670245178e1eb67664cace7f260b5d60d165ce9b79c413",
+        "after_sha256": "31cf862037874601e4c377679f87984bd511de8c2aa81ab53623c323f48c7530"
+      },
+      {
+        "path": "templates/manifest.json",
+        "before_sha256": "9cdb931ef8ec128e9b7c651d3f6fb86dec09ff2e5fa36dcfe4f1d2d1f048d772",
+        "after_sha256": "f51e760ba7ddb0b2b3083d41df01f14270e7114993ab6503fcd704e617da0d5e"
+      },
+      {
+        "path": "templates/provenance.html",
+        "before_sha256": "87f4c7760dd8cb9880bf3b925a892a829ee4d22cba73a9ee8d482a2eb6f2fb1a",
+        "after_sha256": "e9dac9b6f3c969e7cb13f9542f91ce3be7ded9b0290eea1e99068354300fa25c"
+      },
+      {
+        "path": "docs/changes/presentation-template-pack/record.md",
+        "before_sha256": "e47fdbc40f8dc12e435aa0f3fdd7fd5cfe9df92a4650edd0807b806eb7a4e7e3",
+        "after_sha256": "420db722bd29553395344a5a45edae413dea224f2013d2fe0b199f764325c7c9"
+      },
+      {
+        "path": "docs/changes/presentation-template-pack/specs/reusable-presentation-templates/spec.md",
+        "before_sha256": "9f8dd744d250f978a43ce893ee49d3e861cad3d0444b0a587c54415c30b149fe",
+        "after_sha256": "7a260d0d79687e296d1e1b609ff8835db3d307c368e3ce8f3e4776897a500ac2"
+      },
+      {
+        "path": "docs/changes/presentation-template-pack/tasks.md",
+        "before_sha256": "5f7ce5e418aab513d8bdb06a1658d1977ff08370f53abf4b8eaead3df0966e60",
+        "after_sha256": "caf84b78e0d7093bbc6614e838d42ec62ab0c9e6d24bd8a529a9410bfcbc5129"
+      }
+    ],
+    "new_test_file": {
+      "path": "tests/template-annotation.test.cjs",
+      "sha256": "c744cd22dcf207b2f1e62f452a34649dc32aae22bbb6d0c845ce4b35c655a7b7",
+      "bytes": 5184
+    },
+    "canonical_runtime_unchanged": true,
+    "playback_and_view_helpers_unchanged": true,
+    "visual_stylesheet_unchanged": true,
+    "source_manifest_refreshed": true,
+    "regression_cases": 4,
+    "independent_review_after_fix": {
+      "reviewer": "Astra",
+      "verdict": "APPROVE_CODE_REVIEW",
+      "attribution": "Coordinator report in this task",
+      "scope": "Code review. Browser coverage is the separate coordinator receipt."
+    },
+    "status": "CLOSED",
+    "browser_recheck": "PASS_COORDINATOR_RECORDED_STATIC_CONTEXT_AND_MODE"
+  },
+  "parent_browser_report": {
+    "source": "Coordinator report and supplied browser evidence receipt",
+    "performed_by": "coordinator",
+    "default_theme_and_layout": "GOOD_COORDINATOR_REPORTED",
+    "held_slider_clock_advances": true,
+    "held_slider_amplitude_changes": true,
+    "frame_rate_measured": false,
+    "cdp_note": "Browser transport took 1226 seconds; this proves continued clock and parameter changes, not smooth frame rate.",
+    "repeated_by_this_task": false,
+    "H1_annotation_browser_recheck": "PASS",
+    "evidence_reference": {
+      "logical_path": "review-navigation/html-tools-browser-checks.json",
+      "external_to_this_repository": true,
+      "sha256": "6972f215ec08a286ade814444e705e242c30463ae1d68360bcc3143713dc36bf",
+      "bytes": 1659
+    },
+    "recorded_checks": {
+      "held_slider": {
+        "start_time": "37.97 s",
+        "during_drag_time": "1264.08 s",
+        "amplitude": "1.13 cm",
+        "playing_after": true,
+        "limitation": "Browser transport took 1226 seconds; this proves continued clock and parameter changes, not smooth frame rate."
+      },
+      "pause_language": {
+        "before_en": "1351.09 s",
+        "after_cs": "1351,09 s",
+        "button_cs": "P\u0159ehr\u00e1t"
+      },
+      "pause_iteration_language_sources": {
+        "before_cs": "11,12 s",
+        "after_en": "11.12 s",
+        "button": "Play",
+        "mounted_versions": 1
+      },
+      "fullscreen": "Host navigation absent; Czech model controls remain; screenshot saved. Exited through button.",
+      "annotation": "Saved one QA note on #model-en-current > #model-point; stage stayed visible and fitted; QA note deleted through UI.",
+      "static_languages": "Evidence and provenance visible in Czech and English. H1 repair verified in browser.",
+      "static_annotation_context": {
+        "provenance_cs": "#provenance-example-cs > figure > img",
+        "provenance_en": "#provenance-example-en > figure > img",
+        "evidence_cs": "#evidence-example-cs > figure > img",
+        "evidence_en": "#evidence-example-en > figure > img",
+        "saved_en_note_highlights": "EN: 1; CS: 0; return EN: 1. Panel retains English identity.",
+        "mode": "Annotation remains active across language changes.",
+        "layout": "Provenance composition remains visible and fitted after saving the note.",
+        "cleanup": "Only the coordinator QA note was deleted through its own delete control. No user notes were changed."
+      },
+      "limits": "Reduced motion and rejected fullscreen are code/unit-test evidence. No browser frame-rate claim."
+    }
+  },
+  "test_history": [
+    {
+      "phase": "initial pack",
+      "passed": 58,
+      "failed": 0,
+      "expectations": 312,
+      "test_files": 10,
+      "new_run_during_finalization": false
+    },
+    {
+      "phase": "H1 correction",
+      "passed": 62,
+      "failed": 0,
+      "expectations": 312,
+      "test_files": 11,
+      "new_run_during_finalization": false
+    }
+  ],
+  "evidence_only_finalization": {
+    "code_changed": false,
+    "tests_rerun": false,
+    "browser_repeated": false,
+    "written_files": [
+      "docs/changes/presentation-template-pack/record.md",
+      "docs/changes/presentation-template-pack/validation.json"
+    ],
+    "attribution": "Coordinator browser evidence; Astra code verdict reported by coordinator."
+  }
+}

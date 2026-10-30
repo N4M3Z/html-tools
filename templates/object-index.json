@@ -1,0 +1,124 @@
+{
+  "schema": "html-tools-object-index/v1",
+  "nativePackage": {
+    "path": "source.svg",
+    "sha256": "c29c9413c432493eb9d2c7c45161414fdf62a1a98c75997065186af97465b297"
+  },
+  "coverage": {
+    "status": "illustrative-partial-index",
+    "fullLosslessObjectGraph": false,
+    "importerImplemented": false,
+    "omittedObjects": [
+      "Background rectangle",
+      "Axes path"
+    ],
+    "unsupportedNativeProperties": "Not audited. Retain the complete native source."
+  },
+  "slides": [
+    {
+      "id": "example-slide",
+      "order": 0,
+      "sourcePart": "source.svg",
+      "size": {
+        "width": 960,
+        "height": 640,
+        "units": "svg-user-units"
+      },
+      "objects": [
+        {
+          "id": "sample-series",
+          "order": 2,
+          "zOrder": 2,
+          "kind": "polyline",
+          "transform": {
+            "units": "svg-user-units",
+            "coordinateSpace": "source-root",
+            "matrix": [
+              1,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            "rotationDegrees": 0,
+            "flipX": false,
+            "flipY": false,
+            "groupChain": [],
+            "bounds": {
+              "x": 120,
+              "y": 130,
+              "width": 700,
+              "height": 330
+            }
+          },
+          "textRuns": [],
+          "mediaRefs": [],
+          "nativeProperties": {
+            "points": "120,460 260,400 400,430 540,260 680,210 820,130"
+          },
+          "rawPartRefs": [
+            {
+              "package": "source.svg",
+              "part": "source.svg",
+              "elementId": "sample-series"
+            }
+          ]
+        },
+        {
+          "id": "source-caption",
+          "order": 3,
+          "zOrder": 3,
+          "kind": "text",
+          "transform": {
+            "units": "svg-user-units",
+            "coordinateSpace": "source-root",
+            "matrix": [
+              1,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            "rotationDegrees": 0,
+            "flipX": false,
+            "flipY": false,
+            "groupChain": [],
+            "anchor": {
+              "x": 100,
+              "y": 600
+            },
+            "bounds": null
+          },
+          "textRuns": [
+            {
+              "text": "Illustrative data / Ukázková data",
+              "fontFamily": "system-ui,sans-serif",
+              "fontSize": 28,
+              "baseline": "normal",
+              "superscript": false,
+              "subscript": false,
+              "rawPartRef": "source.svg#source-caption"
+            }
+          ],
+          "paragraphs": [
+            {
+              "runIndices": [
+                0
+              ]
+            }
+          ],
+          "mediaRefs": [],
+          "rawPartRefs": [
+            {
+              "package": "source.svg",
+              "part": "source.svg",
+              "elementId": "source-caption"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

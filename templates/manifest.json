@@ -1,0 +1,47 @@
+{
+  "schema": "html-tools-source-manifest/v1",
+  "id": "illustrative-curve-example",
+  "kind": "illustrative-example-not-an-import",
+  "nativePackage": {
+    "path": "source.svg",
+    "sha256": "c29c9413c432493eb9d2c7c45161414fdf62a1a98c75997065186af97465b297",
+    "mediaType": "image/svg+xml",
+    "immutable": true,
+    "role": "preservation-source"
+  },
+  "objectIndex": {
+    "path": "object-index.json",
+    "sha256": "d0a664ddc33895035e701f3a8ce426861fd2d3e37d8fb7c5748be1e4ce94c1db",
+    "coverage": "partial-demonstration",
+    "fullLosslessObjectGraph": false
+  },
+  "editableMaster": {
+    "path": "editable-master.svg",
+    "sha256": "0736a206244e89b034bedde9f6060fdec738f1a5aa0c8c42d98e056f3780100c",
+    "derivedFrom": "nativePackage"
+  },
+  "derivedBuild": {
+    "path": "derived-build.svg",
+    "sha256": "df75638deda552c0df8057b5fe5223cb614686cb1ae96dc93cb43431ae330aec",
+    "derivedFrom": "editableMaster"
+  },
+  "slide": {
+    "path": "evidence.html",
+    "sha256": "31cf862037874601e4c377679f87984bd511de8c2aa81ab53623c323f48c7530",
+    "consumes": [
+      "derivedBuild"
+    ]
+  },
+  "preview": {
+    "path": "preview.svg",
+    "sha256": "6d8b1c480f6f448901725e724aa0d00b8b299af9962e57e83e5a4ce3217c959b",
+    "role": "preview-only",
+    "isPreservationSource": false
+  },
+  "retention": {
+    "screenshotsAreNotSource": true,
+    "rawNativePartsRequired": true,
+    "unknownObjectCoverage": "Not audited by this example. Preserve the native source.",
+    "presentationImporterImplemented": false
+  }
+}

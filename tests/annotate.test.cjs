@@ -2,6 +2,26 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const {formatTuicr, TYPES} = require('../runtime/annotate.js');
 
+test('an animated SVG target retains its selected address after DOM replacement', () => {
+  const {targetAddress} = require('../runtime/annotate.js');
+  const root = {id:'slide-28-en-p3', matches:() => true};
+  const figure = {id:'figure-28', parentNode:root, textContent:'Model', matches:() => false, getAttribute:() => null};
+  const body = {children:[]};
+  const svg = {id:'plot', tagName:'svg', parentNode:body, children:[]};
+  const label = {id:'', tagName:'text', parentNode:svg, textContent:'Apparent longitude', getAttribute:() => null};
+  body.children.push(svg); svg.children.push(label);
+  const frame = {dataset:{}, contentDocument:{body}, getAttribute:() => 'model.html?lang=en'};
+  const address = targetAddress({el:figure, frame, inner:label, pin:{x:50,y:30}});
+  label.parentNode = null;
+  svg.children = [];
+  root.id = 'slide-28-cs-p1';
+  frame.contentDocument = {body:{children:[]}};
+  assert.equal(address.slide, 'slide-28-en-p3');
+  assert.equal(address.path, '#figure-28');
+  assert.deepEqual(address.inner, {src:'model.html', path:'#plot › text', snippet:'Apparent longitude'});
+  assert.match(formatTuicr([{...address, kind:'note', text:'Keep this label', ts:'1'}]), /Apparent longitude/);
+});
+
 test('tuicr export lists numbered typed comments with a legend of used types', () => {
   const text = formatTuicr([
     {slide: 'one-prompt', path: 'h2', kind: 'issue', text: 'heading wraps to three lines', snippet: 'One prompt', ts: '1'},

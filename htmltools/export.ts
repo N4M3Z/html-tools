@@ -6,8 +6,8 @@ import { createHash } from "node:crypto";
 import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { dirname, extname, join, relative, resolve, sep } from "node:path";
 
-export const FOLDERS = ["runtime", "htmltools"];
-export const SUFFIXES = [".ts", ".js", ".css"];
+export const FOLDERS = ["runtime", "htmltools", "templates"];
+export const SUFFIXES = [".ts", ".js", ".css", ".html", ".svg", ".json", ".md"];
 
 export type Manifest = { version: number; files: Record<string, string> };
 

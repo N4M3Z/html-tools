@@ -20,7 +20,8 @@ Export the runtime and tools into a consumer:
 bun htmltools/cli.ts export /path/to/consumer/vendor/html-tools
 ```
 
-The export writes `runtime/*.js`, `htmltools/*.ts`, and `manifest.json` with a sha256 digest per file.
+The export writes `runtime/*.js`, `htmltools/*.ts`, `templates/*`, and `manifest.json`.
+The manifest records a SHA-256 digest for each exported file.
 An update stops if an exported file has local changes. Revert the edit, or keep a copy outside the export.
 
 Bundle one page with every local asset inlined:
@@ -140,6 +141,22 @@ screen says so in its corner. The arrow keys move between scenes.
 `parse`, `scenes`, `sceneAt`, `render`, and `controller` are the pure parts. The controller takes the clock as
 an argument, so playback is testable without a browser. A GIF cannot pause with position, so a page that shows a
 proof plays the cast and keeps the GIF for places that render images only.
+
+## Presentation templates
+
+Open [templates/index.html](templates/index.html) from a server rooted at this repository or an exported directory.
+The pack provides a model/readout, dominant evidence, a one-version iteration selector, and a provenance chain.
+Each composition supports CS and EN. It uses the existing fitted-stage and annotation runtimes.
+
+`runtime/model-playback.js` provides a pure controller and a browser adapter.
+Playback starts by default. Parameter input keeps the clock running. Explicit pause survives language remounts.
+Reduced motion defaults to paused. Optional fullscreen hides host chrome and retains model controls.
+
+The provenance example retains an immutable native package and its digest, plus an explicitly partial object index.
+Screenshots are previews, not preservation sources. No presentation importer is included.
+
+See [templates/README.md](templates/README.md) for reuse, export, source-preservation fields,
+and the browser review checklist.
 
 ## Consumers
 

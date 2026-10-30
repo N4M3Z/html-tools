@@ -40,6 +40,7 @@
     var records = typeof localStorage !== "undefined" ? load() : [];
     var on = false;
     var pending = null;
+    var pendingAddress = null;
 
     function load() {
         try { return JSON.parse(localStorage.getItem(STORE) || "[]"); } catch (e) { return []; }
@@ -82,6 +83,17 @@
     }
     function where(r) { return r.path + (r.inner ? " › " + r.inner.src + " › " + r.inner.path : ""); }
 
+    // Capture the address before animation replaces a selected SVG element or frame document.
+    function targetAddress(loc) {
+        var slide = slideOf(loc.el);
+        if (!slide || !slide.id) { return null; }
+        var address = { slide: slide.id, path: pathWithin(slide, loc.el), snippet: snippet(loc.el), pin: loc.pin || undefined };
+        if (loc.inner) {
+            address.inner = { src: frameSrc(loc.frame), path: pathWithin(loc.frame.contentDocument.body, loc.inner), snippet: snippet(loc.inner) };
+        }
+        return address;
+    }
+
     // tuicr review comment, the same shape forge-cli's annotate.js produces.
     function formatTuicr(items) {
         var used = {};
@@ -98,7 +110,7 @@
         return out.join("\n");
     }
 
-    if (typeof module !== "undefined" && module.exports) { module.exports = { formatTuicr: formatTuicr, TYPES: TYPES }; return; }
+    if (typeof module !== "undefined" && module.exports) { module.exports = { formatTuicr: formatTuicr, TYPES: TYPES, targetAddress: targetAddress }; return; }
 
     var style = document.createElement("style");
     style.textContent = [
@@ -113,8 +125,8 @@
         "body.annot-on:not(.annot-inner) " + CFG.active + " " + TARGETS.split(", ").map(function (s) { return s + ":hover"; }).join(",body.annot-on:not(.annot-inner) " + CFG.active + " ") + "{outline:1px dashed color-mix(in srgb,var(--gold,#F2C46B) 74.902%,transparent);outline-offset:6px;cursor:crosshair}",
         "body.annot-on " + CFG.active + " iframe{pointer-events:none}",
         "body.annot-on " + CFG.active + " :is(figure,.diagram,.diagram-frame,svg){cursor:crosshair}",
-        "body.annot-on [data-annot]{position:relative}",
-        "body.annot-on [data-annot],body.annot-on " + CFG.active + " [data-annot]:hover{outline:1px solid var(--annot-color)!important;outline-offset:6px;position:relative}",
+        "body.annot-on [data-annot-static]{position:relative}",
+        "body.annot-on [data-annot],body.annot-on " + CFG.active + " [data-annot]:hover{outline:1px solid var(--annot-color)!important;outline-offset:6px}",
         ".annot-pin{display:none;position:absolute;width:1.3rem;height:1.3rem;margin:-.65rem 0 0 -.65rem;border-radius:50%;background:var(--annot-color);color:var(--void,#070A12);font:700 .62rem/1.3rem var(--mono,ui-monospace,monospace);text-align:center;box-shadow:0 0 0 2px var(--void,#070A12);z-index:6;pointer-events:none}",
         "body.annot-on .annot-pin{display:block}",
         ".annot-badge{display:none;position:absolute;top:-.65rem;left:-.65rem;width:1.3rem;height:1.3rem;border-radius:50%;background:var(--annot-color);color:var(--void,#070A12);font:700 .62rem/1.3rem var(--mono,ui-monospace,monospace);text-align:center;box-shadow:0 0 0 2px var(--void,#070A12);z-index:6;pointer-events:none}",
@@ -248,7 +260,7 @@
     }
     function paint() {
         Array.prototype.forEach.call(document.querySelectorAll("[data-annot]"), function (el) {
-            el.removeAttribute("data-annot"); el.style.removeProperty("--annot-color");
+            el.removeAttribute("data-annot"); el.removeAttribute("data-annot-static"); el.style.removeProperty("--annot-color");
             Array.prototype.forEach.call(el.querySelectorAll(":scope > .annot-badge, :scope > .annot-pin"), function (x) { x.remove(); });
         });
         records.forEach(function (r) {
@@ -256,6 +268,8 @@
             var el = slide && resolve(slide, r.path);
             if (!el || r.inner || isSvgPart(el)) { return; }   // those get floating marks instead
             var t = typeOf(r.kind);
+            // Anchor badges without replacing absolute, fixed, or sticky layout.
+            if (getComputedStyle(el).position === "static") { el.setAttribute("data-annot-static", ""); }
             el.setAttribute("data-annot", r.id);
             el.style.setProperty("--annot-color", t.color);
             if (r.pin && !/^(img|svg)$/i.test(el.tagName)) {
@@ -285,6 +299,7 @@
     }
     function openPop(loc, x, y, record) {
         pending = loc;
+        pendingAddress = record ? null : targetAddress(loc);
         editing = record || null;
         image = record ? record.image || null : null;
         shot.innerHTML = image ? "<img src='" + image + "' alt='screenshot'>" : "";
@@ -297,7 +312,7 @@
         pop.style.left = Math.max(8, Math.min(x, innerWidth - pop.offsetWidth - 16)) + "px";
         textarea.focus();
     }
-    function closePop() { pop.classList.remove("on"); pending = null; editing = null; image = null; shot.innerHTML = ""; }
+    function closePop() { pop.classList.remove("on"); pending = null; pendingAddress = null; editing = null; image = null; shot.innerHTML = ""; }
     function commit() {
         var text = textarea.value.trim();
         if (!pending || (!text && !image)) { closePop(); return; }
@@ -305,10 +320,8 @@
             editing.kind = kind; editing.text = text || "(screenshot)"; editing.image = image || undefined;
             save(); paint(); closePop(); return;
         }
-        var slide = slideOf(pending.el);
-        if (!slide || !slide.id) { closePop(); return; }
-        var r = { id: Date.now().toString(36), slide: slide.id, path: pathWithin(slide, pending.el), kind: kind, text: text || "(screenshot)", snippet: snippet(pending.el), image: image || undefined, pin: pending.pin || undefined, ts: new Date().toISOString() };
-        if (pending.inner) { r.inner = { src: frameSrc(pending.frame), path: pathWithin(pending.frame.contentDocument.body, pending.inner), snippet: snippet(pending.inner) }; }
+        if (!pendingAddress) { closePop(); return; }
+        var r = Object.assign({}, pendingAddress, { id: Date.now().toString(36), kind: kind, text: text || "(screenshot)", image: image || undefined, ts: new Date().toISOString() });
         records.push(r);
         save(); paint(); closePop();
     }
