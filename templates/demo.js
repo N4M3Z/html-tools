@@ -4,7 +4,6 @@
   const $ = id => document.getElementById(id);
   const example = document.body.dataset.example;
   const query = new URLSearchParams(location.search);
-  let lang = query.get('lang') === 'cs' ? 'cs' : 'en';
   let version = query.get('version') === 'earlier' ? 'earlier' : 'current';
   let player, fullscreen, saved, observer;
   const words = {
@@ -45,12 +44,12 @@
       controlsOptional:'Tato ukázka podkladu nepotřebuje ovládání přehrávání.',
     },
   };
-  const t = key => words[lang][key];
-  const format = (value, places = 2) => value.toFixed(places).replace('.', lang === 'cs' ? ',' : '.');
+  // The shared runtime fills [data-i18n] text, sets <html lang>, and formats numbers for the language.
+  const copy = LanguageCopy.bind({copy:words, languages:['en', 'cs'], fallback:'en', attributes:{text:'data-i18n'}, remember:'query'});
+  const t = copy.t, format = copy.format;
   function translate() {
-    document.documentElement.lang = lang;
+    const lang = copy.language;
     document.title = t(({index:'home', model:'model', evidence:'evidence', iterations:'iterations', provenance:'provenance'})[example]);
-    document.querySelectorAll('[data-i18n]').forEach(node => { node.textContent = t(node.dataset.i18n); });
     $('language').value = lang;
     document.querySelector('.host-chrome nav').setAttribute('aria-label', t('home'));
     document.querySelector('.presentation')?.setAttribute('aria-label', document.title);
@@ -61,7 +60,7 @@
   }
   function modelNode(selected) {
     const node = document.createElement('section');
-    node.className = 'fixed-stage template-unit active'; node.id = `model-${lang}-${selected}`;
+    node.className = 'fixed-stage template-unit active'; node.id = `model-${copy.language}-${selected}`;
     node.dataset.version = selected;
     node.innerHTML = `<svg viewBox="0 0 1200 800" role="img" aria-labelledby="diagram-title"><title id="diagram-title">${t(selected === 'current' ? 'currentCaption' : 'earlierCaption')}</title>
       <path d="M130 400H1070M600 100V700" stroke="var(--line)" stroke-width="3"/>
@@ -95,7 +94,7 @@
     if (player) { saved = player.snapshot(); player.destroy(); }
     if (fullscreen) fullscreen.destroy();
     if (example === 'evidence' || example === 'provenance') {
-      $('stage-host').firstElementChild.id = `${example}-example-${lang}`;
+      $('stage-host').firstElementChild.id = `${example}-example-${copy.language}`;
     }
     translate();
     if (example === 'model' || example === 'iterations') {
@@ -113,7 +112,7 @@
     const editing = document.body.classList.contains('annot-edit');
     if (annotator) annotator.on(false);
     try {
-      lang = $('language').value; const url = new URL(location.href); url.searchParams.set('lang', lang); history.replaceState(null, '', url); mount();
+      copy.set($('language').value); mount();
     } finally {
       if (annotator) { annotator.on(annotating); if (annotating && editing) annotator.edit(true); }
     }

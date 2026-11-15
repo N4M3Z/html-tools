@@ -19,7 +19,7 @@ test("the existing Bun CLI exports every example and its canonical runtime depen
   for (const name of ["index.html", "model-readout.html", "evidence.html", "iterations.html", "provenance.html", "templates.css", "demo.js", "source.svg", "editable-master.svg", "derived-build.svg", "preview.svg", "object-index.json", "manifest.json", "README.md", "hash-manifest.ts"]) {
     expect(manifest.files["templates/" + name]).toBe(digest(readFileSync(join(destination, "templates", name))));
   }
-  for (const name of ["annotate.js", "frame-fit.js", "model-playback.js", "presentation-view.js"]) {
+  for (const name of ["annotate.js", "frame-fit.js", "frame-steps.js", "language-copy.js", "model-playback.js", "presentation-view.js"]) {
     expect(manifest.files["runtime/" + name]).toBe(digest(readFileSync(join(destination, "runtime", name))));
   }
   for (const name of Object.keys(manifest.files).filter(name => name.endsWith(".html"))) {
@@ -29,6 +29,7 @@ test("the existing Bun CLI exports every example and its canonical runtime depen
       expect(target.startsWith(destination + sep)).toBe(true);
       expect(existsSync(target)).toBe(true);
     }
+    expect(html.indexOf('src="../runtime/language-copy.js"')).toBeLessThan(html.indexOf('src="demo.js"'));
     expect(html.indexOf('src="demo.js"')).toBeLessThan(html.indexOf('src="../runtime/annotate.js"'));
   }
 });

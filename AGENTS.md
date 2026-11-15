@@ -27,6 +27,12 @@
 - `runtime/frame-fit.js`: `SlideFrameFit.geometry` and `attach`, a 1920 × 1080 canvas fitted into a host.
 - `runtime/cast-player.js`: `CastPlayer.attach(host, castText)` plays an asciinema v2 cast with pause, a
   scrubber, and the `# Scenario:` scene the playhead is in. `parse`, `scenes`, `render`, `controller` are pure.
+- `runtime/frame-steps.js`: `FrameSteps.attach(options)`, the figure side of the step protocol between a framed
+  figure and its deck. The type prefix (default `slidekit:figure-`) and the identity fields are options.
+  Pure: `types`, `matches`, `keyDelta`, `targetOrigin`, `trusted`, `controller`.
+- `runtime/language-copy.js`: `LanguageCopy.bind(options)` fills `[data-t]`, `data-aria` and `data-alt` from a copy
+  table, sets `<html lang>`, formats numbers, and switches language in place. The first language comes from the
+  hash, then the query, then `<html lang>`. Pure: `resolve`, `match`, `parity`, `lookup`, `format`, `href`.
 - `htmltools/bundle.ts`: `new Bundler(root).write(source, output)` inlines local assets as data URIs, turns a
   link to a local page into a `data-modal` preview, and adds the focus bridge that frames use to hand Escape
   and Tab back to the parent.
@@ -37,6 +43,7 @@
 - `htmltools/cli.ts`: the `export`, `bundle`, `prose` and `cast` commands, run with `bun htmltools/cli.ts`.
 - `docs/changes/` and `docs/specs/`: the spec-driven change tree (HTML-0001 rule: the native `docs/` root, no `openspec/`).
   `extract-html-tools-runtime` records the split from slides, `cast-player-runtime` the recording player.
+  `stepped-figures-and-language-copy` records the step protocol and the copy binding.
 
 Plain browser JavaScript for the runtime, TypeScript on bun for the tools. No package manager, no build
 step. Every runtime file exports its pure functions through `module.exports` when loaded by node, so the
@@ -45,7 +52,8 @@ tests need no browser.
 ## Validation
 
 - `bun test`: bundling, export and prose in `tests/tools.test.ts`, the stream converter in `tests/cast.test.ts`,
-  and the node files, the tuicr format, the frame geometry, and the cast player.
+  and the node files, the tuicr format, the frame geometry, the cast player, the step protocol, and the copy
+  binding.
 - `rune spec doctor` and `rune spec validate`: the change tree.
 - `prek run --all-files`: the same command, from `.pre-commit-config.yaml`.
 
@@ -65,5 +73,6 @@ tests need no browser.
    and the `slides.annotations:`, `slides.contrast:` and `slides.theme:` keys hold state already saved in browsers.
 3. **Renaming the frame bridge messages.** `slidekit:escape` and `slidekit:focus-parent` are the protocol a
    consumer's deck script listens for. So are `--inset-right` and `window.HTML_COMMANDS`.
+   The `slidekit:figure-` message types and their fields in `frame-steps.js` are the same kind of contract.
 4. **Testing selectors without a browser.** The node tests cover pure functions only. A change to the DOM
    code needs a page opened with `?annotate=1`, `?hc=1` or `?theme=day`.

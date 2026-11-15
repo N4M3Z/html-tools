@@ -142,6 +142,75 @@ screen says so in its corner. The arrow keys move between scenes.
 an argument, so playback is testable without a browser. A GIF cannot pause with position, so a page that shows a
 proof plays the cast and keeps the GIF for places that render images only.
 
+## Step a figure from a deck
+
+Load `runtime/frame-steps.js` in a figure page that a deck shows in a frame. The figure has its own reveal steps.
+
+```html
+<script>
+  const figure = FrameSteps.attach({
+    total: 4,
+    identity: { figure: 'orbit', lang: 'en' },
+    onPage: page => { /* show step `page` */ },
+    onActive: active => player.setActive(active),
+  });
+  figure.markReady();
+</script>
+```
+
+Every message is an object with a `type`, the identity fields, and the fields below. `P` is the `prefix`
+option. The default is `slidekit:figure-`.
+
+| Direction | Type | Fields |
+| --- | --- | --- |
+| figure to deck | `P + 'ready'` | `total` |
+| figure to deck | `P + 'page'` | `page`, `total` |
+| figure to deck | `P + 'boundary'` | `delta`, `page`, `total` |
+| figure to deck | `P + 'navigate'` | `delta` |
+| deck to figure | `P + 'step'` | `delta`, -1 or 1 |
+| deck to figure | `P + 'step-to'` | `page` |
+| deck to figure | `P + 'playback'` | `active`, a boolean |
+
+A step before `markReady()` is ignored. A `step-to` before it waits. A step past the first or last page sends
+`boundary`. The arrow keys, PageUp, PageDown, and Space send `navigate` from an embedded figure and step a
+standalone page. Keys in a form field, a slider, or editable text stay with the field, as do Space and Enter on a
+button or link. The figure is active when the deck said so and the document is visible. `onActive` receives each
+change and `figure.active` holds the current value. The runtime never changes the manual pause intent.
+
+The figure accepts a message only from its parent window, and ignores one with an identity field that differs
+from its own. A served figure posts to its own origin and checks the origin of each message. A figure in a share
+build is a data URL with an opaque origin, so it posts with `*` and relies on the parent check. Set `origin` when
+the deck has another origin. A share build carries no query, so read the identity from the hash:
+`new URLSearchParams(location.hash.slice(1))`.
+
+## Bind copy in more than one language
+
+Load `runtime/language-copy.js` and hand it a copy table, one object of key and text for each language:
+
+```html
+<h1 data-t="title"></h1>
+<img src="orbit.svg" data-alt="orbitAlt">
+<button data-aria="playLabel" data-t="play"></button>
+<script>
+  const copy = LanguageCopy.bind({
+    copy: { en: { title: 'Orbit', orbitAlt: 'One orbit', play: 'Play', playLabel: 'Play the model' },
+            cs: { title: 'Dráha', orbitAlt: 'Jedna dráha', play: 'Přehrát', playLabel: 'Přehrát model' } },
+    fallback: 'en',
+  });
+  readout.textContent = copy.format(1.5); // "1.50" in English, "1,50" in Czech
+</script>
+```
+
+`[data-t]` sets the text, `data-aria` sets `aria-label`, and `data-alt` sets `alt`. Text goes in through
+`textContent`, never as HTML. The `attributes` option renames the three attributes. The first language comes
+from the hash (`#lang=cs`), then the query (`?lang=cs`), then `<html lang>`, then `fallback`. The hash is first
+because a share build carries no query. `copy.set('cs')` switches in place: the same elements get new text and
+`<html lang>` changes, with no reload, so a page keeps its playback snapshot. A change of the hash does the same,
+so a deck can switch a framed figure. `remember: 'hash'` or `'query'` writes the language back to the address.
+
+A key with no text uses the fallback language, and then shows the key itself. `LanguageCopy.parity(copy)` lists
+each key that a language does not have, as `{ key, missing }`. Assert that it is empty in a test.
+
 ## Presentation templates
 
 Open [templates/index.html](templates/index.html) from a server rooted at this repository or an exported directory.

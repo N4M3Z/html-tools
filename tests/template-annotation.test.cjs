@@ -35,7 +35,11 @@ function staticPage(example, initial = 'en', annotating = true, editing = false)
     history:{replaceState(_state,_title,url) { const next = new URL(url); location.href=next.href; location.search=next.search; }},
     ResizeObserver:class { observe() {} },
   };
-  vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../templates/demo.js'), 'utf8'),context);
+  // The demo reads its copy through the shared language runtime, loaded first as the pages load it.
+  vm.createContext(context);
+  vm.runInContext(fs.readFileSync(path.join(__dirname, '../runtime/language-copy.js'), 'utf8'),context);
+  context.LanguageCopy = window.LanguageCopy;
+  vm.runInContext(fs.readFileSync(path.join(__dirname, '../templates/demo.js'), 'utf8'),context);
   const annotationModule = {exports:{}};
   // Use the canonical address and copy functions. Do not reproduce their formatting in this test.
   vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../runtime/annotate.js'), 'utf8'),
