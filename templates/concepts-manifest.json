@@ -1,0 +1,14 @@
+{
+  "schema": "html-tools-concept-manifest/v1",
+  "inputs": {
+    "concepts.jsonld": "27985eccef06455a1518b6d5e0c9798ed79e23540782fa63df039dab86e5a7a0"
+  },
+  "outputs": {
+    "concepts.json": "81b1ea9b9dd166277cb7f8075c521abcb62d0af1e6bd7dcba978831fd4074460"
+  },
+  "counts": {
+    "concepts": 6,
+    "units": 4,
+    "relations": 6
+  }
+}

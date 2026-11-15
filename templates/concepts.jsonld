@@ -1,0 +1,403 @@
+{
+  "@graph": [
+    {
+      "@id": "https://example.org/tides/concept",
+      "@type": [
+        "http://www.w3.org/2004/02/skos/core#ConceptScheme"
+      ],
+      "http://purl.org/dc/terms/title": [
+        {
+          "@value": "Sample tide concepts",
+          "@language": "en"
+        },
+        {
+          "@value": "Ukázkové pojmy o dmutí",
+          "@language": "cs"
+        }
+      ]
+    },
+    {
+      "@id": "https://example.org/tides/concept#tide",
+      "@type": [
+        "http://www.w3.org/2004/02/skos/core#Concept"
+      ],
+      "http://www.w3.org/2004/02/skos/core#inScheme": [
+        {
+          "@id": "https://example.org/tides/concept"
+        }
+      ],
+      "http://www.w3.org/2004/02/skos/core#prefLabel": [
+        {
+          "@value": "Tide",
+          "@language": "en"
+        },
+        {
+          "@value": "Dmutí",
+          "@language": "cs"
+        }
+      ],
+      "http://www.w3.org/2004/02/skos/core#definition": [
+        {
+          "@value": "The regular rise and fall of the sea level.",
+          "@language": "en"
+        },
+        {
+          "@value": "Pravidelné stoupání a klesání mořské hladiny.",
+          "@language": "cs"
+        }
+      ],
+      "http://www.w3.org/2004/02/skos/core#altLabel": [
+        {
+          "@value": "Ebb and flow",
+          "@language": "en"
+        },
+        {
+          "@value": "Příliv a odliv",
+          "@language": "cs"
+        }
+      ],
+      "http://www.w3.org/2000/01/rdf-schema#seeAlso": [
+        {
+          "@id": "https://example.org/tides/unit/1"
+        },
+        {
+          "@id": "https://example.org/tides/unit/2"
+        },
+        {
+          "@id": "https://example.org/tides/unit/4"
+        }
+      ]
+    },
+    {
+      "@id": "https://example.org/tides/concept#tidal-range",
+      "@type": [
+        "http://www.w3.org/2004/02/skos/core#Concept"
+      ],
+      "http://www.w3.org/2004/02/skos/core#inScheme": [
+        {
+          "@id": "https://example.org/tides/concept"
+        }
+      ],
+      "http://www.w3.org/2004/02/skos/core#prefLabel": [
+        {
+          "@value": "Tidal range",
+          "@language": "en"
+        },
+        {
+          "@value": "Výška dmutí",
+          "@language": "cs"
+        }
+      ],
+      "http://www.w3.org/2004/02/skos/core#definition": [
+        {
+          "@value": "The height difference between high water and low water.",
+          "@language": "en"
+        },
+        {
+          "@value": "Výškový rozdíl mezi nejvyšší a nejnižší hladinou.",
+          "@language": "cs"
+        }
+      ],
+      "http://www.w3.org/2004/02/skos/core#broader": [
+        {
+          "@id": "https://example.org/tides/concept#tide"
+        }
+      ],
+      "http://www.w3.org/2000/01/rdf-schema#seeAlso": [
+        {
+          "@id": "https://example.org/tides/unit/1"
+        },
+        {
+          "@id": "https://example.org/tides/unit/3"
+        }
+      ]
+    },
+    {
+      "@id": "https://example.org/tides/concept#spring-tide",
+      "@type": [
+        "http://www.w3.org/2004/02/skos/core#Concept"
+      ],
+      "http://www.w3.org/2004/02/skos/core#inScheme": [
+        {
+          "@id": "https://example.org/tides/concept"
+        }
+      ],
+      "http://www.w3.org/2004/02/skos/core#prefLabel": [
+        {
+          "@value": "Spring tide",
+          "@language": "en"
+        },
+        {
+          "@value": "Skočné dmutí",
+          "@language": "cs"
+        }
+      ],
+      "http://www.w3.org/2004/02/skos/core#definition": [
+        {
+          "@value": "A tide with the largest range. It occurs near a new moon and a full moon.",
+          "@language": "en"
+        },
+        {
+          "@value": "Dmutí s největší výškou. Nastává kolem novu a úplňku.",
+          "@language": "cs"
+        }
+      ],
+      "http://www.w3.org/2004/02/skos/core#broader": [
+        {
+          "@id": "https://example.org/tides/concept#tide"
+        }
+      ],
+      "http://www.w3.org/2004/02/skos/core#related": [
+        {
+          "@id": "https://example.org/tides/concept#neap-tide"
+        }
+      ],
+      "http://www.w3.org/2000/01/rdf-schema#seeAlso": [
+        {
+          "@id": "https://example.org/tides/unit/2"
+        }
+      ]
+    },
+    {
+      "@id": "https://example.org/tides/concept#neap-tide",
+      "@type": [
+        "http://www.w3.org/2004/02/skos/core#Concept"
+      ],
+      "http://www.w3.org/2004/02/skos/core#inScheme": [
+        {
+          "@id": "https://example.org/tides/concept"
+        }
+      ],
+      "http://www.w3.org/2004/02/skos/core#prefLabel": [
+        {
+          "@value": "Neap tide",
+          "@language": "en"
+        },
+        {
+          "@value": "Hluché dmutí",
+          "@language": "cs"
+        }
+      ],
+      "http://www.w3.org/2004/02/skos/core#definition": [
+        {
+          "@value": "A tide with the smallest range. It occurs near the first quarter and the last quarter of the moon.",
+          "@language": "en"
+        },
+        {
+          "@value": "Dmutí s nejmenší výškou. Nastává kolem první a poslední čtvrti.",
+          "@language": "cs"
+        }
+      ],
+      "http://www.w3.org/2004/02/skos/core#broader": [
+        {
+          "@id": "https://example.org/tides/concept#tide"
+        }
+      ],
+      "http://www.w3.org/2004/02/skos/core#related": [
+        {
+          "@id": "https://example.org/tides/concept#spring-tide"
+        }
+      ],
+      "http://www.w3.org/2000/01/rdf-schema#seeAlso": [
+        {
+          "@id": "https://example.org/tides/unit/2"
+        }
+      ]
+    },
+    {
+      "@id": "https://example.org/tides/concept#tidal-force",
+      "@type": [
+        "http://www.w3.org/2004/02/skos/core#Concept"
+      ],
+      "http://www.w3.org/2004/02/skos/core#inScheme": [
+        {
+          "@id": "https://example.org/tides/concept"
+        }
+      ],
+      "http://www.w3.org/2004/02/skos/core#prefLabel": [
+        {
+          "@value": "Tidal force",
+          "@language": "en"
+        },
+        {
+          "@value": "Slapová síla",
+          "@language": "cs"
+        }
+      ],
+      "http://www.w3.org/2004/02/skos/core#definition": [
+        {
+          "@value": "The difference in gravitational pull across a body. It raises the tide.",
+          "@language": "en"
+        },
+        {
+          "@value": "Rozdíl gravitačního působení napříč tělesem. Vyvolává dmutí.",
+          "@language": "cs"
+        }
+      ],
+      "http://www.w3.org/2004/02/skos/core#related": [
+        {
+          "@id": "https://example.org/tides/concept#tide"
+        }
+      ],
+      "http://www.w3.org/2000/01/rdf-schema#seeAlso": [
+        {
+          "@id": "https://example.org/tides/unit/2"
+        }
+      ]
+    },
+    {
+      "@id": "https://example.org/tides/concept#tide-gauge",
+      "@type": [
+        "http://www.w3.org/2004/02/skos/core#Concept"
+      ],
+      "http://www.w3.org/2004/02/skos/core#inScheme": [
+        {
+          "@id": "https://example.org/tides/concept"
+        }
+      ],
+      "http://www.w3.org/2004/02/skos/core#prefLabel": [
+        {
+          "@value": "Tide gauge",
+          "@language": "en"
+        },
+        {
+          "@value": "Mareograf",
+          "@language": "cs"
+        }
+      ],
+      "http://www.w3.org/2004/02/skos/core#definition": [
+        {
+          "@value": "An instrument that records the sea level over time.",
+          "@language": "en"
+        },
+        {
+          "@value": "Přístroj, který zaznamenává výšku mořské hladiny v čase.",
+          "@language": "cs"
+        }
+      ],
+      "http://www.w3.org/2004/02/skos/core#altLabel": [
+        {
+          "@value": "Přílivoměr",
+          "@language": "cs"
+        }
+      ],
+      "http://www.w3.org/2004/02/skos/core#related": [
+        {
+          "@id": "https://example.org/tides/concept#tidal-range"
+        }
+      ],
+      "http://www.w3.org/2000/01/rdf-schema#seeAlso": [
+        {
+          "@id": "https://example.org/tides/unit/3"
+        },
+        {
+          "@id": "https://example.org/tides/unit/4"
+        }
+      ]
+    },
+    {
+      "@id": "https://example.org/tides/unit/1",
+      "@type": [
+        "https://schema.org/CreativeWork"
+      ],
+      "http://purl.org/dc/terms/identifier": [
+        {
+          "@value": "1"
+        }
+      ],
+      "https://schema.org/position": [
+        {
+          "@value": 1
+        }
+      ],
+      "http://purl.org/dc/terms/title": [
+        {
+          "@value": "The sea level moves",
+          "@language": "en"
+        },
+        {
+          "@value": "Hladina moře se hýbe",
+          "@language": "cs"
+        }
+      ]
+    },
+    {
+      "@id": "https://example.org/tides/unit/2",
+      "@type": [
+        "https://schema.org/CreativeWork"
+      ],
+      "http://purl.org/dc/terms/identifier": [
+        {
+          "@value": "2"
+        }
+      ],
+      "https://schema.org/position": [
+        {
+          "@value": 2
+        }
+      ],
+      "http://purl.org/dc/terms/title": [
+        {
+          "@value": "Two bodies pull",
+          "@language": "en"
+        },
+        {
+          "@value": "Působí dvě tělesa",
+          "@language": "cs"
+        }
+      ]
+    },
+    {
+      "@id": "https://example.org/tides/unit/3",
+      "@type": [
+        "https://schema.org/CreativeWork"
+      ],
+      "http://purl.org/dc/terms/identifier": [
+        {
+          "@value": "3"
+        }
+      ],
+      "https://schema.org/position": [
+        {
+          "@value": 3
+        }
+      ],
+      "http://purl.org/dc/terms/title": [
+        {
+          "@value": "A gauge records the level",
+          "@language": "en"
+        },
+        {
+          "@value": "Mareograf měří hladinu",
+          "@language": "cs"
+        }
+      ]
+    },
+    {
+      "@id": "https://example.org/tides/unit/4",
+      "@type": [
+        "https://schema.org/CreativeWork"
+      ],
+      "http://purl.org/dc/terms/identifier": [
+        {
+          "@value": "4"
+        }
+      ],
+      "https://schema.org/position": [
+        {
+          "@value": 4
+        }
+      ],
+      "http://purl.org/dc/terms/title": [
+        {
+          "@value": "A model predicts the next tide",
+          "@language": "en"
+        },
+        {
+          "@value": "Model předpoví další dmutí",
+          "@language": "cs"
+        }
+      ]
+    }
+  ]
+}

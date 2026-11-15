@@ -7,7 +7,7 @@ import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSy
 import { dirname, extname, join, relative, resolve, sep } from "node:path";
 
 export const FOLDERS = ["runtime", "htmltools", "templates"];
-export const SUFFIXES = [".ts", ".js", ".css", ".html", ".svg", ".json", ".md"];
+export const SUFFIXES = [".ts", ".js", ".css", ".html", ".svg", ".json", ".jsonld", ".md"];
 
 export type Manifest = { version: number; files: Record<string, string> };
 

@@ -1,0 +1,17 @@
+/* Page layout of the companion examples. The runtime views bring their own styles. */
+:root { --void:#080d16; --surface:#111a2c; --ink:#dbe5f7; --mut:#99aac6; --line:#2a3a57; --gold:#f5c769; --cyan:#55d2e5; color-scheme: dark; }
+body { margin: 0; background: var(--void); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+.companion { max-width: 1120px; margin: 0 auto; padding: 24px 20px 64px; }
+.skip { position: absolute; left: -999px; }
+.skip:focus { left: 12px; top: 12px; padding: 8px 12px; background: var(--surface); color: var(--ink); }
+header nav { display: flex; flex-wrap: wrap; gap: 8px 20px; }
+header nav a { color: var(--cyan); }
+header h1 { margin: 20px 0 4px; font-size: 36px; line-height: 1.15; }
+.intro { margin: 0 0 20px; color: var(--mut); max-width: 70ch; }
+.language { display: inline-flex; gap: 8px; align-items: center; margin-top: 12px; color: var(--mut); }
+.language select, .unit-controls button { padding: 8px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); color: var(--ink); font: inherit; }
+.unit { padding: 32px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); min-height: 220px; }
+.unit h2 { margin: 0 0 12px; font-size: 28px; }
+.unit-controls { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 16px; }
+.unit-controls button { cursor: pointer; }
+a:focus-visible, button:focus-visible, select:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }

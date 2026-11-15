@@ -33,6 +33,17 @@
 - `runtime/language-copy.js`: `LanguageCopy.bind(options)` fills `[data-t]`, `data-aria` and `data-alt` from a copy
   table, sets `<html lang>`, formats numbers, and switches language in place. The first language comes from the
   hash, then the query, then `<html lang>`. Pure: `resolve`, `match`, `parity`, `lookup`, `format`, `href`.
+- `runtime/companion-pages.js`: `CompanionPages`, the shared parts of the companion pages. Load it after
+  `language-copy.js`. Pure: `fold`, `matches`, `pick`, `sortBy`, `identifier`, `safeUrl`, `address`, `href`, `fill`,
+  `checker`, `assertValid`. `runtime/companion-pages.css` styles every view with the class prefix `cp-`.
+- `runtime/concept-atlas.js`: `ConceptAtlas.mount(host, options)` draws the atlas or the dictionary of a page set
+  from `html-tools-concept-atlas/v1` data with SKOS names, and `ConceptAtlas.panel(options)` opens the concepts of
+  the unit on view over another page. Pure: `validate`, `normalize`, `context`, `search`, `neighborhood`, `shortcut`.
+- `runtime/asset-library.js`: `AssetLibrary.mount(host, options)` draws asset records or references from
+  `html-tools-asset-library/v1` data. Corrections are a list apart from the sources.
+  Pure: `validate`, `normalize`, `filterAssets`, `filterReferences`, `statusCounts`, `mediaKind`.
+- `htmltools/concepts.ts`: `fromJsonLd(document, options)`, expanded JSON-LD with SKOS as atlas data, and
+  `conceptManifest`, the digests of the input and the output.
 - `htmltools/bundle.ts`: `new Bundler(root).write(source, output)` inlines local assets as data URIs, turns a
   link to a local page into a `data-modal` preview, and adds the focus bridge that frames use to hand Escape
   and Tab back to the parent.
@@ -40,10 +51,11 @@
 - `htmltools/prose.ts`: `extract(text, title)`, the visible prose as markdown, one block per line, for Vale.
 - `htmltools/cast.ts`: `convert(streamText, options)`, a Claude Code `stream-json` log as asciicast v2 text with
   one coloured `track N` prefix per agent and `# Scenario:` chapters, plus `retime` for gap and speed changes.
-- `htmltools/cli.ts`: the `export`, `bundle`, `prose` and `cast` commands, run with `bun htmltools/cli.ts`.
+- `htmltools/cli.ts`: the `export`, `bundle`, `prose`, `cast` and `concepts` commands, run with `bun htmltools/cli.ts`.
 - `docs/changes/` and `docs/specs/`: the spec-driven change tree (HTML-0001 rule: the native `docs/` root, no `openspec/`).
   `extract-html-tools-runtime` records the split from slides, `cast-player-runtime` the recording player.
   `stepped-figures-and-language-copy` records the step protocol and the copy binding.
+  `companion-pages` records the concept atlas, the library, their data formats, and the address format.
 
 Plain browser JavaScript for the runtime, TypeScript on bun for the tools. No package manager, no build
 step. Every runtime file exports its pure functions through `module.exports` when loaded by node, so the
@@ -53,7 +65,8 @@ tests need no browser.
 
 - `bun test`: bundling, export and prose in `tests/tools.test.ts`, the stream converter in `tests/cast.test.ts`,
   and the node files, the tuicr format, the frame geometry, the cast player, the step protocol, and the copy
-  binding.
+  binding. The companion pages have `tests/companion-pages.test.cjs`, `tests/concept-atlas.test.cjs`,
+  `tests/asset-library.test.cjs`, and `tests/concepts.test.ts` for the conversion, the sample data, and the export.
 - `rune spec doctor` and `rune spec validate`: the change tree.
 - `prek run --all-files`: the same command, from `.pre-commit-config.yaml`.
 

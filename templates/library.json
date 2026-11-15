@@ -1,0 +1,76 @@
+{
+  "schema": "html-tools-asset-library/v1",
+  "languages": ["en", "cs"],
+  "licenseStatuses": [
+    { "id": "cleared", "label": { "en": "Cleared", "cs": "Vyřešeno" } },
+    { "id": "attribution", "label": { "en": "Attribution required", "cs": "Nutné uvedení autora" } },
+    { "id": "unresolved", "label": { "en": "Unresolved", "cs": "Nevyřešeno" } }
+  ],
+  "assets": [
+    {
+      "id": "curve-source",
+      "units": [1],
+      "file": "source.svg",
+      "sha256": "c29c9413c432493eb9d2c7c45161414fdf62a1a98c75997065186af97465b297",
+      "title": { "en": "Illustrative curve, source file", "cs": "Ilustrační křivka, zdrojový soubor" },
+      "source": { "title": "Authored for this example" },
+      "license": { "status": "cleared", "name": "Sample licence" },
+      "notes": { "en": "The preserved source. Do not edit it.", "cs": "Zachovaný zdroj. Neupravujte jej." }
+    },
+    {
+      "id": "curve-master",
+      "units": [],
+      "file": "editable-master.svg",
+      "sha256": "0736a206244e89b034bedde9f6060fdec738f1a5aa0c8c42d98e056f3780100c",
+      "title": { "en": "Illustrative curve, editable master", "cs": "Ilustrační křivka, upravitelná předloha" },
+      "source": { "title": "Authored for this example" },
+      "license": { "status": "cleared", "name": "Sample licence" }
+    },
+    {
+      "id": "curve-build",
+      "units": [1, 3],
+      "file": "derived-build.svg",
+      "sha256": "df75638deda552c0df8057b5fe5223cb614686cb1ae96dc93cb43431ae330aec",
+      "title": { "en": "Illustrative curve, derived build", "cs": "Ilustrační křivka, odvozené sestavení" },
+      "source": { "title": "Sample image collection", "url": "https://example.org/images/curve", "author": "Sample author" },
+      "license": { "status": "attribution", "name": "Sample attribution licence", "url": "https://example.org/licences/attribution" },
+      "notes": { "en": "Sample record. The author and the licence are invented.", "cs": "Ukázkový záznam. Autor a licence jsou smyšlené." }
+    },
+    {
+      "id": "curve-preview",
+      "units": [4],
+      "file": "preview.svg",
+      "sha256": "6d8b1c480f6f448901725e724aa0d00b8b299af9962e57e83e5a4ce3217c959b",
+      "title": { "en": "Illustrative curve, preview", "cs": "Ilustrační křivka, náhled" },
+      "license": { "status": "unresolved" },
+      "notes": { "en": "Sample record with no source. It shows the unresolved filter.", "cs": "Ukázkový záznam bez zdroje. Ukazuje filtr nevyřešených." }
+    }
+  ],
+  "references": [
+    {
+      "id": "tide-tables",
+      "title": { "en": "Sample tide tables", "cs": "Ukázkové tabulky dmutí" },
+      "url": "https://example.org/tide-tables",
+      "author": "Sample office",
+      "units": [3, 4],
+      "note": { "en": "The gauge record that unit 3 shows.", "cs": "Záznam mareografu, který ukazuje jednotka 3." }
+    },
+    {
+      "id": "tide-primer",
+      "title": "Sample primer on tides",
+      "url": "https://example.org/primer",
+      "units": [1, 2]
+    }
+  ],
+  "corrections": [
+    {
+      "id": "range-value",
+      "units": [3],
+      "text": {
+        "en": "Unit 3 gives the range as 4 m. The sample gauge record gives 3.6 m. Both values are invented for this example.",
+        "cs": "Jednotka 3 uvádí výšku 4 m. Ukázkový záznam mareografu uvádí 3,6 m. Obě hodnoty jsou pro tuto ukázku smyšlené."
+      },
+      "references": ["tide-tables"]
+    }
+  ]
+}

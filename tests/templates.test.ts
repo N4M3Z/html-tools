@@ -29,6 +29,7 @@ test("the existing Bun CLI exports every example and its canonical runtime depen
       expect(target.startsWith(destination + sep)).toBe(true);
       expect(existsSync(target)).toBe(true);
     }
+    if (!html.includes('src="demo.js"')) continue;
     expect(html.indexOf('src="../runtime/language-copy.js"')).toBeLessThan(html.indexOf('src="demo.js"'));
     expect(html.indexOf('src="demo.js"')).toBeLessThan(html.indexOf('src="../runtime/annotate.js"'));
   }

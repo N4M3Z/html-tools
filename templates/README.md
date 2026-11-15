@@ -15,6 +15,33 @@ Each page also accepts `?annotate=1`. Preserve the other query parameters when a
 The pages also work without a server where browser policy permits local scripts and storage.
 Clipboard access and fullscreen depend on browser policy.
 
+## Companion examples
+
+These pages show the concept atlas and the library runtimes. They load their data with `fetch`, so they need a server.
+
+- `templates/concept-panel.html#lang=en&unit=2`: four sample units. The Concepts button or the `O` key opens the panel.
+- `templates/concept-atlas.html?lang=cs&unit=2`: the atlas, with the concepts of unit 2 first.
+- `templates/concept-dictionary.html?lang=cs`: the dictionary in Czech order.
+- `templates/asset-library.html?lang=en&unit=3`: the asset records of unit 3.
+- `templates/references.html?lang=en`: the sources, and the corrections in their own section.
+
+`companion.js` binds the page text through `LanguageCopy` and mounts the view that `body[data-page]` names.
+It also holds the Czech words of the runtimes. English is the default of each runtime.
+Each link between the pages carries `lang` and `unit`. A language switch stays on the page and keeps the selection.
+To reuse a page, copy it with `companion.js`, replace the data file, and set `unitHref` to the address of your units.
+
+`concepts.jsonld` is the sample concept source, and `concepts.json` is its conversion. Refresh both after an edit:
+
+```sh
+cd templates
+bun ../htmltools/cli.ts concepts concepts.jsonld concepts.json --languages en,cs --manifest concepts-manifest.json --download concepts.jsonld
+bun hash-manifest.ts
+```
+
+`library.json` describes the SVG files of the provenance example. Each `sha256` is the digest of the real file,
+and a test compares them. `manifest.json` lists the four data files under `companionData`.
+The sample is about tides. Its sources, authors, licences, and corrected values are invented.
+
 ## Reuse a composition
 
 Copy an example outside the managed export before changing it.

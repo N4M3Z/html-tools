@@ -17,6 +17,8 @@ export function refreshManifest(directory: string): void {
   for (const key of ["objectIndex", "editableMaster", "derivedBuild", "slide", "preview"]) {
     manifest[key].sha256 = digest(bytes(manifest[key].path));
   }
+  // The data of the companion pages: the concept source, the atlas data made from it, and the library records.
+  for (const entry of manifest.companionData ?? []) entry.sha256 = digest(bytes(entry.path));
   writeFileSync(manifestPath, JSON.stringify(manifest, null, 2) + "\n");
 }
 

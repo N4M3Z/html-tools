@@ -1,0 +1,105 @@
+/* Companion pages: the concept atlas, the dictionary, the concept panel and the library.
+   The colours read the page's variables and fall back to the Night palette. */
+.cp-root {
+  --cp-ground: var(--void, #080d16);
+  --cp-surface: var(--surface, #111a2c);
+  --cp-ink: var(--ink, #dbe5f7);
+  --cp-muted: var(--mut, #99aac6);
+  --cp-line: var(--line, #2a3a57);
+  --cp-accent: var(--cyan, #55d2e5);
+  --cp-mark: var(--gold, #f5c769);
+  color: var(--cp-ink);
+  font: 16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+.cp-root *, .cp-root *::before, .cp-root *::after { box-sizing: border-box; }
+.cp-root a { color: var(--cp-accent); }
+.cp-root a:focus-visible, .cp-root button:focus-visible, .cp-root input:focus-visible, .cp-root select:focus-visible,
+.cp-root summary:focus-visible { outline: 2px solid var(--cp-mark); outline-offset: 2px; }
+.cp-muted { color: var(--cp-muted); }
+.cp-context, .cp-status { margin: 0 0 8px; color: var(--cp-muted); min-height: 1.5em; }
+.cp-search-label { display: block; margin: 0 0 4px; color: var(--cp-muted); font-size: 14px; }
+.cp-search, .cp-select {
+  width: 100%; padding: 10px 12px; border: 1px solid var(--cp-line); border-radius: 8px;
+  background: var(--cp-surface); color: var(--cp-ink); font: inherit;
+}
+.cp-button {
+  padding: 8px 12px; border: 1px solid var(--cp-line); border-radius: 8px;
+  background: var(--cp-surface); color: var(--cp-ink); font: inherit; cursor: pointer; text-align: left;
+}
+.cp-button:hover { border-color: var(--cp-accent); }
+.cp-problems { margin: 8px 0; padding-left: 20px; color: var(--cp-mark); overflow-wrap: anywhere; }
+
+/* Atlas and panel */
+.cp-body { display: grid; gap: 24px; margin-top: 12px; }
+.cp-atlas .cp-body { grid-template-columns: minmax(220px, 1fr) minmax(0, 2fr); align-items: start; }
+.cp-directory h3, .cp-detail h3 { margin: 16px 0 8px; font-size: 14px; letter-spacing: .04em; text-transform: uppercase; color: var(--cp-muted); }
+.cp-concept-list { display: grid; gap: 6px; }
+.cp-concept { display: flex; align-items: baseline; gap: 8px; width: 100%; }
+.cp-concept small { margin-left: auto; color: var(--cp-muted); }
+.cp-concept[aria-pressed="true"] { border-color: var(--cp-mark); }
+.cp-concept.cp-on { border-left: 4px solid var(--cp-mark); }
+.cp-concept.cp-near { border-left: 4px solid var(--cp-accent); }
+.cp-number { min-width: 1.5em; font-weight: 700; color: var(--cp-muted); }
+.cp-near summary, .cp-units summary { cursor: pointer; margin: 12px 0 8px; }
+.cp-category { margin: 0; color: var(--cp-muted); font-size: 14px; }
+.cp-concept-title { margin: 0 0 8px; font-size: 28px; line-height: 1.2; }
+.cp-definition { margin: 0 0 8px; max-width: 70ch; }
+.cp-graph { margin: 16px 0; }
+.cp-graph svg { width: 100%; max-width: 480px; height: auto; display: block; }
+.cp-graph figcaption { color: var(--cp-muted); font-size: 14px; margin: 4px 0 8px; }
+.cp-graph-legend { display: grid; gap: 6px; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+.cp-edge { stroke: var(--cp-line); stroke-width: 2; }
+.cp-node circle { fill: var(--cp-surface); stroke: var(--cp-muted); stroke-width: 2; }
+.cp-node text { fill: var(--cp-ink); font: 700 14px system-ui, sans-serif; }
+.cp-node.cp-on circle { stroke: var(--cp-mark); }
+.cp-node.cp-near circle { stroke: var(--cp-accent); }
+.cp-node.cp-selected circle { stroke-width: 4; }
+.cp-relations { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.cp-relations li { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between; }
+.cp-units ul { margin: 0; padding-left: 20px; }
+.cp-links { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 24px; padding-top: 12px; border-top: 1px solid var(--cp-line); }
+.cp-links:empty { display: none; }
+
+.cp-panel {
+  width: min(560px, 100vw); max-width: 100vw; height: 100vh; max-height: 100vh; margin: 0 0 0 auto; padding: 0;
+  border: 0; border-left: 1px solid var(--cp-line); background: var(--cp-ground);
+}
+.cp-panel::backdrop { background: rgb(0 0 0 / 55%); }
+.cp-panel-head {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 16px;
+  border-bottom: 1px solid var(--cp-line); position: sticky; top: 0; background: var(--cp-ground);
+}
+.cp-panel-head h2 { margin: 0; font-size: 18px; }
+.cp-panel-content { padding: 16px; }
+
+/* Dictionary and library cards */
+.cp-cards, .cp-records { display: grid; gap: 16px; margin-top: 12px; }
+.cp-assets .cp-records { grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); align-items: start; }
+.cp-card { padding: 16px; border: 1px solid var(--cp-line); border-radius: 12px; background: var(--cp-surface); min-width: 0; }
+.cp-card h2, .cp-card h3 { margin: 0 0 8px; font-size: 20px; line-height: 1.25; overflow-wrap: anywhere; }
+.cp-card.cp-selected { border-color: var(--cp-mark); }
+.cp-controls { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); margin-bottom: 12px; }
+.cp-preview { display: block; width: 100%; max-height: 200px; object-fit: contain; margin-bottom: 12px; background: var(--cp-ground); border-radius: 8px; }
+.cp-badge { display: inline-block; padding: 2px 10px; border: 1px solid var(--cp-line); border-radius: 999px; font-size: 13px; color: var(--cp-muted); }
+.cp-badge[data-status] { border-color: var(--cp-accent); color: var(--cp-ink); }
+.cp-facts { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 4px 12px; margin: 12px 0; }
+.cp-facts dt { color: var(--cp-muted); }
+.cp-facts dd { margin: 0; overflow-wrap: anywhere; }
+.cp-hash { font: 13px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace; }
+.cp-unit-links, .cp-basis { display: flex; flex-wrap: wrap; gap: 4px 12px; margin: 8px 0 0; }
+.cp-unit-links:empty { display: none; }
+.cp-term { color: var(--cp-muted); }
+
+/* References: the corrections are a separate block with their own mark. */
+.cp-sources, .cp-corrections { display: grid; gap: 12px; }
+.cp-sources h2, .cp-corrections h2 { margin: 0; font-size: 22px; }
+.cp-corrections { margin-top: 16px; padding: 16px; border: 1px solid var(--cp-mark); border-radius: 12px; }
+.cp-correction { border-left: 4px solid var(--cp-mark); }
+.cp-correction .cp-badge { border-color: var(--cp-mark); color: var(--cp-mark); margin-bottom: 8px; }
+
+@media (max-width: 760px) {
+  .cp-atlas .cp-body { grid-template-columns: minmax(0, 1fr); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .cp-button { transition: border-color .12s; }
+}

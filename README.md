@@ -20,7 +20,7 @@ Export the runtime and tools into a consumer:
 bun htmltools/cli.ts export /path/to/consumer/vendor/html-tools
 ```
 
-The export writes `runtime/*.js`, `htmltools/*.ts`, `templates/*`, and `manifest.json`.
+The export writes `runtime/*.js`, `runtime/*.css`, `htmltools/*.ts`, `templates/*`, and `manifest.json`.
 The manifest records a SHA-256 digest for each exported file.
 An update stops if an exported file has local changes. Revert the edit, or keep a copy outside the export.
 
@@ -210,6 +210,58 @@ so a deck can switch a framed figure. `remember: 'hash'` or `'query'` writes the
 
 A key with no text uses the fallback language, and then shows the key itself. `LanguageCopy.parity(copy)` lists
 each key that a language does not have, as `{ key, missing }`. Assert that it is empty in a test.
+
+## Companion pages: concepts and library
+
+A page set often has pages beside its units: a dictionary, a concept atlas, and a library of media and sources.
+Load `runtime/companion-pages.css`, `runtime/language-copy.js`, `runtime/companion-pages.js`, and then one or both
+of `runtime/concept-atlas.js` and `runtime/asset-library.js`.
+
+```html
+<main id="content"></main>
+<script>
+  const fields = CompanionPages.address(location, ['unit', 'concept']);
+  const view = ConceptAtlas.mount(document.getElementById('content'), {
+    src: 'concepts.json', view: 'atlas', // or 'dictionary'
+    unit: fields.unit, selected: fields.concept, fallback: 'en',
+    unitHref: '../index.html?lang={lang}#{unit}',
+    atlasHref: 'concept-atlas.html', dictionaryHref: 'concept-dictionary.html',
+    words: { cs: { search: 'Hledat pojmy' } },
+  });
+  // After a language switch: view.update({ language: 'cs' });
+</script>
+```
+
+The atlas shows the concepts on the unit that the reader came from, then the related concepts, then the others.
+The selected concept has a graph of its neighbors, its relations, and links to its units. The dictionary lists every
+concept with its definition, in the alphabetical order of the active language. `ConceptAtlas.panel(options)` adds a
+dialog to another page. The `O` key or the `trigger` button opens it with the concepts of the unit on view.
+The `unit` option is a function that returns that unit, and the default reads `unit` from the address.
+
+`AssetLibrary.mount(host, { src: 'library.json', view: 'assets' })` lists each media record with its file, SHA-256
+digest, source, license status, notes, and units. It has a search, a license status filter, and a unit filter.
+`view: 'references'` lists the sources, and then the corrections in their own section. A correction is never in the
+list of sources.
+
+Each page reads `lang`, `unit`, and the selected `concept` or `asset` from the hash, then from the query:
+`concept-atlas.html?lang=cs&unit=12` or `asset-library.html#lang=en&unit=12`. A deck writes these links, for
+example in its section bar. `unitHref` is the link template from a companion page back to a unit.
+
+The data formats are `html-tools-concept-atlas/v1` and `html-tools-asset-library/v1`. The concept format uses SKOS
+names: `prefLabel` and `definition` for each language, `altLabel`, `broader`, `related`, and `units`.
+[The design](docs/changes/companion-pages/design.md) has both formats and the address fields.
+`validate(raw)` returns each problem with its record, such as `concepts[3] "hill" units: names "7", which does
+not exist`. A view with bad data shows those lines. Search ignores case and diacritics and reads every language.
+Text from the data goes in as text, and a link from the data must be `http`, `https`, or relative.
+
+Convert expanded JSON-LD with SKOS concepts to the atlas data:
+
+```sh
+bun htmltools/cli.ts concepts concepts.jsonld concepts.json --languages en,cs --manifest concepts-manifest.json
+```
+
+The manifest has the SHA-256 digest of the input and the output. The tool has no JSON-LD processor, so the input
+must be in expanded form, with full IRIs and no `@context`.
 
 ## Presentation templates
 

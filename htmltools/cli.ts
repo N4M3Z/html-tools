@@ -6,10 +6,13 @@
 //   bun htmltools/cli.ts prose page.html [more.html] > prose.md
 //   bun htmltools/cli.ts cast stream.jsonl out.cast [--prompt prompt.txt] [--max-gap 2] [--speed 2]
 //                             [--cols 120] [--rows 36] [--title "…"] [--trim last-workflow]
+//   bun htmltools/cli.ts concepts concepts.jsonld concepts.json [--languages en,cs] [--manifest concepts-manifest.json]
+//                             [--download concepts.jsonld]
 import { readFileSync, writeFileSync } from "node:fs";
 import { basename, dirname, resolve } from "node:path";
 import { Bundler } from "./bundle.ts";
 import { convert } from "./cast.ts";
+import { conceptManifest, fromJsonLd, serialize } from "./concepts.ts";
 import { exportInto } from "./export.ts";
 import { extract } from "./prose.ts";
 
@@ -58,7 +61,23 @@ export function main(argv: string[]): number {
       return 0;
     }
   }
-  console.error("usage: bun htmltools/cli.ts export <dest> | bundle <page> <output> | prose <page>... | cast <stream.jsonl> <out.cast> [flags]");
+  if (command === "concepts") {
+    const { positional, named } = flags(rest);
+    if (positional.length === 2) {
+      const input = readFileSync(positional[0]);
+      const data = fromJsonLd(JSON.parse(input.toString("utf8")), {
+        languages: named.languages ? named.languages.split(",").map((language) => language.trim()).filter(Boolean) : undefined,
+        downloads: named.download ? [{ label: "JSON-LD", href: named.download }] : undefined,
+      });
+      const output = serialize(data);
+      writeFileSync(positional[1], output);
+      const manifest = conceptManifest({ [basename(positional[0])]: input }, { [basename(positional[1])]: output }, data);
+      if (named.manifest) writeFileSync(named.manifest, serialize(manifest));
+      console.log(JSON.stringify({ output: positional[1], ...manifest.counts }));
+      return 0;
+    }
+  }
+  console.error("usage: bun htmltools/cli.ts export <dest> | bundle <page> <output> | prose <page>... | cast <stream.jsonl> <out.cast> [flags] | concepts <in.jsonld> <out.json> [flags]");
   return 2;
 }
 

@@ -38,6 +38,29 @@
     "role": "preview-only",
     "isPreservationSource": false
   },
+  "companionData": [
+    {
+      "path": "concepts.jsonld",
+      "sha256": "27985eccef06455a1518b6d5e0c9798ed79e23540782fa63df039dab86e5a7a0",
+      "role": "concept-source"
+    },
+    {
+      "path": "concepts.json",
+      "sha256": "81b1ea9b9dd166277cb7f8075c521abcb62d0af1e6bd7dcba978831fd4074460",
+      "role": "concept-atlas-data",
+      "derivedFrom": "concepts.jsonld"
+    },
+    {
+      "path": "concepts-manifest.json",
+      "sha256": "607c859f4478e2288ed3252399328dbf5ea10a13f6b391afbb9570d127199ebb",
+      "role": "concept-conversion-manifest"
+    },
+    {
+      "path": "library.json",
+      "sha256": "eb368ce93590a1f871fb2f0c957860c846063c44f4806453b2b7f8c66e48fae8",
+      "role": "asset-library-data"
+    }
+  ],
   "retention": {
     "screenshotsAreNotSource": true,
     "rawNativePartsRequired": true,

@@ -1,0 +1,172 @@
+{
+  "schema": "html-tools-concept-atlas/v1",
+  "languages": [
+    "en",
+    "cs"
+  ],
+  "units": [
+    {
+      "id": "1",
+      "title": {
+        "en": "The sea level moves",
+        "cs": "Hladina moře se hýbe"
+      }
+    },
+    {
+      "id": "2",
+      "title": {
+        "en": "Two bodies pull",
+        "cs": "Působí dvě tělesa"
+      }
+    },
+    {
+      "id": "3",
+      "title": {
+        "en": "A gauge records the level",
+        "cs": "Mareograf měří hladinu"
+      }
+    },
+    {
+      "id": "4",
+      "title": {
+        "en": "A model predicts the next tide",
+        "cs": "Model předpoví další dmutí"
+      }
+    }
+  ],
+  "concepts": [
+    {
+      "id": "neap-tide",
+      "prefLabel": {
+        "en": "Neap tide",
+        "cs": "Hluché dmutí"
+      },
+      "definition": {
+        "en": "A tide with the smallest range. It occurs near the first quarter and the last quarter of the moon.",
+        "cs": "Dmutí s nejmenší výškou. Nastává kolem první a poslední čtvrti."
+      },
+      "broader": [
+        "tide"
+      ],
+      "related": [
+        "spring-tide"
+      ],
+      "units": [
+        "2"
+      ]
+    },
+    {
+      "id": "spring-tide",
+      "prefLabel": {
+        "en": "Spring tide",
+        "cs": "Skočné dmutí"
+      },
+      "definition": {
+        "en": "A tide with the largest range. It occurs near a new moon and a full moon.",
+        "cs": "Dmutí s největší výškou. Nastává kolem novu a úplňku."
+      },
+      "broader": [
+        "tide"
+      ],
+      "related": [
+        "neap-tide"
+      ],
+      "units": [
+        "2"
+      ]
+    },
+    {
+      "id": "tidal-force",
+      "prefLabel": {
+        "en": "Tidal force",
+        "cs": "Slapová síla"
+      },
+      "definition": {
+        "en": "The difference in gravitational pull across a body. It raises the tide.",
+        "cs": "Rozdíl gravitačního působení napříč tělesem. Vyvolává dmutí."
+      },
+      "broader": [],
+      "related": [
+        "tide"
+      ],
+      "units": [
+        "2"
+      ]
+    },
+    {
+      "id": "tidal-range",
+      "prefLabel": {
+        "en": "Tidal range",
+        "cs": "Výška dmutí"
+      },
+      "definition": {
+        "en": "The height difference between high water and low water.",
+        "cs": "Výškový rozdíl mezi nejvyšší a nejnižší hladinou."
+      },
+      "broader": [
+        "tide"
+      ],
+      "related": [],
+      "units": [
+        "1",
+        "3"
+      ]
+    },
+    {
+      "id": "tide",
+      "prefLabel": {
+        "en": "Tide",
+        "cs": "Dmutí"
+      },
+      "definition": {
+        "en": "The regular rise and fall of the sea level.",
+        "cs": "Pravidelné stoupání a klesání mořské hladiny."
+      },
+      "altLabel": {
+        "en": [
+          "Ebb and flow"
+        ],
+        "cs": [
+          "Příliv a odliv"
+        ]
+      },
+      "broader": [],
+      "related": [],
+      "units": [
+        "1",
+        "2",
+        "4"
+      ]
+    },
+    {
+      "id": "tide-gauge",
+      "prefLabel": {
+        "en": "Tide gauge",
+        "cs": "Mareograf"
+      },
+      "definition": {
+        "en": "An instrument that records the sea level over time.",
+        "cs": "Přístroj, který zaznamenává výšku mořské hladiny v čase."
+      },
+      "altLabel": {
+        "cs": [
+          "Přílivoměr"
+        ]
+      },
+      "broader": [],
+      "related": [
+        "tidal-range"
+      ],
+      "units": [
+        "3",
+        "4"
+      ]
+    }
+  ],
+  "downloads": [
+    {
+      "label": "JSON-LD",
+      "href": "concepts.jsonld"
+    }
+  ]
+}
