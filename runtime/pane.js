@@ -1,24 +1,46 @@
 /* Command pane for any page: every command, grouped, always visible while open. The palette (palette.js) is
-   for typing a name; the pane (C) is for a glance during a talk or a review. Both read `window.HTML_COMMANDS`
-   through `HtmlCommands.all()`. A command's `group` names its section, in order of first appearance; a command
-   with `here: true` is the current one and is marked. Load after palette.js.
+   for typing a name; the pane (C, ⌘P or Ctrl+P) is for a glance during a talk or a review. Both read
+   `window.HTML_COMMANDS` through `HtmlCommands.all()`. A command's `group` names its section, in order of
+   first appearance; the group `slides`, the jump list of a deck, comes last, so the tools stay on the first
+   screen. A command with `here: true` is the current one and is marked. Load after palette.js.
+
+   ⌘P and Ctrl+P open the pane in place of the print dialog. Print from the browser menu.
 
    While open, the pane sets `--inset-right` on <html> to its width and dispatches a resize event, so a page
-   that fits itself to the window (the html-slides stage) can move aside instead of hiding behind it. */
+   that fits itself to the window (the html-slides stage) can move aside instead of hiding behind it. One
+   panel has the right edge at a time: a panel that opens there dispatches `html-tools:side-panel` on the
+   document with its name in `detail.owner`, and the pane closes when another owner opens. */
 (function () {
     "use strict";
     var WIDTH = "min(22rem, 34vw)";
-    // Pure: commands into named groups, in order of first appearance; "commands" for the unnamed.
-    function groupCommands(commands) {
-        var order = [], byName = {};
+    var LAST = ["slides"];
+    // Pure: commands into named groups, in order of first appearance; "commands" for the unnamed. A group in
+    // `last` (default: the jump list `slides`) goes to the end, whenever its commands were registered.
+    function groupCommands(commands, last) {
+        var order = [], byName = {}, tail = last || LAST;
         commands.forEach(function (c) {
             var name = c.group || "commands";
             if (!byName[name]) { byName[name] = []; order.push(name); }
             byName[name].push(c);
         });
-        return order.map(function (name) { return { name: name, commands: byName[name] }; });
+        var late = function (name) { return tail.indexOf(name) > -1 ? 1 : 0; };
+        return order.map(function (name, index) { return { name: name, index: index }; })
+            .sort(function (a, b) { return late(a.name) - late(b.name) || a.index - b.index; })
+            .map(function (entry) { return { name: entry.name, commands: byName[entry.name] }; });
     }
-    if (typeof module !== "undefined" && module.exports) { module.exports = { groupCommands: groupCommands }; return; }
+    // Pure: what a key does to the pane: "toggle", "close" or null. C and Escape stay with a field that has
+    // the focus.
+    function paneKey(event, open, typing) {
+        var p = event.key === "p" || event.key === "P";
+        if ((event.metaKey || event.ctrlKey) && !event.altKey && !event.shiftKey && p) {
+            // Ctrl+P in a field is a cursor key on macOS, so only ⌘P works there.
+            return event.repeat || (typing && !event.metaKey) ? null : "toggle";
+        }
+        if (event.metaKey || event.ctrlKey || event.altKey || typing) { return null; }
+        if (event.key === "c" || event.key === "C") { return "toggle"; }
+        return event.key === "Escape" && open ? "close" : null;
+    }
+    if (typeof module !== "undefined" && module.exports) { module.exports = { groupCommands: groupCommands, paneKey: paneKey }; return; }
 
     var open = false;
     var style = document.createElement("style");
@@ -62,9 +84,10 @@
     function set(next) {
         open = !!next;
         document.body.classList.toggle("cpane-on", open);
-        if (open) { render(); }
+        if (open) { render(); document.dispatchEvent(new CustomEvent("html-tools:side-panel", { detail: { owner: "pane" } })); }
         inset(open);
     }
+    document.addEventListener("html-tools:side-panel", function (e) { if (open && e.detail && e.detail.owner !== "pane") { set(false); } });
     pane.addEventListener("click", function (e) {
         e.stopPropagation();
         if (e.target.dataset.act === "close") { set(false); return; }
@@ -75,12 +98,12 @@
         document.addEventListener(type, function (e) { if (open && pane.contains(e.target)) { e.stopPropagation(); } }, true);
     });
     document.addEventListener("keydown", function (e) {
-        if (e.metaKey || e.ctrlKey || e.altKey) { return; }
-        if (/input|textarea|select/i.test(e.target.tagName) || e.target.isContentEditable) { return; }
-        if (e.key === "c" || e.key === "C") { e.preventDefault(); e.stopImmediatePropagation(); set(!open); }
-        if (e.key === "Escape" && open) { e.stopImmediatePropagation(); set(false); }
+        var action = paneKey(e, open, /input|textarea|select/i.test(e.target.tagName) || e.target.isContentEditable);
+        if (!action) { return; }
+        e.stopImmediatePropagation();
+        if (action === "toggle") { e.preventDefault(); set(!open); } else { set(false); }
     }, true);
     window.addEventListener("hashchange", function () { if (open) { setTimeout(render, 30); } });
-    window.HTML_COMMANDS = (window.HTML_COMMANDS || []).concat([{ label: "Command pane", hint: "C", group: "panels", run: function () { set(!open); }, state: function () { return open; } }]);
+    window.HTML_COMMANDS = (window.HTML_COMMANDS || []).concat([{ label: "Command pane", hint: "C · ⌘P", group: "panels", run: function () { set(!open); }, state: function () { return open; } }]);
     window.HtmlPane = { open: function () { set(true); }, close: function () { set(false); }, toggle: function () { set(!open); }, refresh: render, width: WIDTH };
 })();

@@ -17,8 +17,9 @@
 - `runtime/annotate.js`: annotates elements, frame contents and SVG parts, stores notes per page URL and copies
   them as tuicr. `E` edits text in place and records a SUGGESTION. `window.HTML_ANNOTATE` sets the unit selectors and
   navigation for a page that is not a deck. The open panel sets `--inset-right` on `<html>`.
-- `runtime/palette.js` and `runtime/pane.js`: the command palette (⌘K, /) and the command pane (C), both
-  over `window.HTML_COMMANDS` through `HtmlCommands.all()`. Pure: `score`, `filter`, `groupCommands`.
+- `runtime/palette.js` and `runtime/pane.js`: the command palette (⌘K, /) and the command pane (C, ⌘P), both
+  over `window.HTML_COMMANDS` through `HtmlCommands.all()`. The pane puts the group `slides` last and closes
+  when another panel takes the right edge. Pure: `score`, `filter`, `groupCommands`, `paneKey`.
 - `runtime/contrast.js`: `H` toggles `html.hc`, overrides the colour variables, injects the same into frames.
   The set comes from `SlideTheme.contrast()` when a theme brings one, else the black constants.
 - `runtime/theme.js`: `T` cycles Night, Day and Dusk on `html[data-theme]`, injects the variables into frames,
@@ -38,7 +39,10 @@
   `checker`, `assertValid`. `runtime/companion-pages.css` styles every view with the class prefix `cp-`.
 - `runtime/concept-atlas.js`: `ConceptAtlas.mount(host, options)` draws the atlas or the dictionary of a page set
   from `html-tools-concept-atlas/v1` data with SKOS names, and `ConceptAtlas.panel(options)` opens the concepts of
-  the unit on view over another page. Pure: `validate`, `normalize`, `context`, `search`, `neighborhood`, `shortcut`.
+  the unit on view over another page, as a dialog or, with `dock: 'side'`, as a panel on the right edge that
+  leaves the page in use. Pure: `validate`, `normalize`, `context`, `search`, `neighborhood`, `shortcut`.
+- `runtime/concept-links.js`: `ConceptLinks.attach(options)` turns the first mention of each concept in the text
+  of its unit into a link that opens the concept panel. Pure: `names`, `pattern`, `entries`, `plan`.
 - `runtime/asset-library.js`: `AssetLibrary.mount(host, options)` draws asset records or references from
   `html-tools-asset-library/v1` data. Corrections are a list apart from the sources.
   Pure: `validate`, `normalize`, `filterAssets`, `filterReferences`, `statusCounts`, `mediaKind`.
@@ -56,6 +60,7 @@
   `extract-html-tools-runtime` records the split from slides, `cast-player-runtime` the recording player.
   `stepped-figures-and-language-copy` records the step protocol and the copy binding.
   `companion-pages` records the concept atlas, the library, their data formats, and the address format.
+  `docked-concept-panel-and-concept-links` records the docked panel, the concept links, and the pane keys.
 
 Plain browser JavaScript for the runtime, TypeScript on bun for the tools. No package manager, no build
 step. Every runtime file exports its pure functions through `module.exports` when loaded by node, so the
@@ -66,7 +71,8 @@ tests need no browser.
 - `bun test`: bundling, export and prose in `tests/tools.test.ts`, the stream converter in `tests/cast.test.ts`,
   and the node files, the tuicr format, the frame geometry, the cast player, the step protocol, and the copy
   binding. The companion pages have `tests/companion-pages.test.cjs`, `tests/concept-atlas.test.cjs`,
-  `tests/asset-library.test.cjs`, and `tests/concepts.test.ts` for the conversion, the sample data, and the export.
+  `tests/concept-links.test.cjs`, `tests/asset-library.test.cjs`, and `tests/concepts.test.ts` for the conversion,
+  the sample data, and the export.
 - `rune spec doctor` and `rune spec validate`: the change tree.
 - `prek run --all-files`: the same command, from `.pre-commit-config.yaml`.
 
@@ -85,7 +91,8 @@ tests need no browser.
 2. **Changing the tuicr line format or the storage keys.** `formatTuicr` output is consumed by review tools,
    and the `slides.annotations:`, `slides.contrast:` and `slides.theme:` keys hold state already saved in browsers.
 3. **Renaming the frame bridge messages.** `slidekit:escape` and `slidekit:focus-parent` are the protocol a
-   consumer's deck script listens for. So are `--inset-right` and `window.HTML_COMMANDS`.
+   consumer's deck script listens for. So are `--inset-right`, `window.HTML_COMMANDS`, and the
+   `html-tools:side-panel` event with its `detail.owner`.
    The `slidekit:figure-` message types and their fields in `frame-steps.js` are the same kind of contract.
 4. **Testing selectors without a browser.** The node tests cover pure functions only. A change to the DOM
    code needs a page opened with `?annotate=1`, `?hc=1` or `?theme=day`.

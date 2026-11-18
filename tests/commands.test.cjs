@@ -27,3 +27,28 @@ test('the pane groups commands by their group, in order of first appearance, unn
   assert.deepEqual(groups.map((g) => [g.name, g.commands.length]), [['navigate', 1], ['modes', 1], ['live', 1], ['commands', 1], ['slides', 2]]);
   assert.equal(groups[4].commands[0].here, true);
 });
+
+test('the jump list of a deck goes last in the pane, whenever it was registered', () => {
+  const tool = {label: 'Annotate', hint: 'A', group: 'review', run() {}};
+  const groups = pane.groupCommands([commands[4], commands[0], commands[5], tool]);
+  assert.deepEqual(groups.map((g) => [g.name, g.commands.length]), [['navigate', 1], ['review', 1], ['slides', 2]]);
+  assert.deepEqual(pane.groupCommands([commands[4], tool], []).map((g) => g.name), ['slides', 'review']);
+});
+
+test('C, ⌘P and Ctrl+P toggle the pane, Escape closes it, and a field keeps its keys', () => {
+  const key = (name, extra = {}) => ({key: name, ...extra});
+  assert.equal(pane.paneKey(key('c'), false, false), 'toggle');
+  assert.equal(pane.paneKey(key('C'), true, false), 'toggle');
+  assert.equal(pane.paneKey(key('c'), false, true), null);
+  assert.equal(pane.paneKey(key('p', {metaKey: true}), false, false), 'toggle');
+  assert.equal(pane.paneKey(key('P', {ctrlKey: true}), true, false), 'toggle');
+  assert.equal(pane.paneKey(key('p', {metaKey: true}), false, true), 'toggle');
+  assert.equal(pane.paneKey(key('p', {ctrlKey: true}), false, true), null);
+  assert.equal(pane.paneKey(key('p', {metaKey: true, shiftKey: true}), false, false), null);
+  assert.equal(pane.paneKey(key('p', {metaKey: true, repeat: true}), false, false), null);
+  assert.equal(pane.paneKey(key('p'), false, false), null);
+  assert.equal(pane.paneKey(key('c', {metaKey: true}), false, false), null);
+  assert.equal(pane.paneKey(key('Escape'), true, false), 'close');
+  assert.equal(pane.paneKey(key('Escape'), false, false), null);
+  assert.equal(pane.paneKey(key('Escape'), true, true), null);
+});

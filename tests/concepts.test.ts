@@ -20,6 +20,7 @@ function graph(): Record<string, unknown>[] {
       [SKOS + "related"]: [{ "@id": "https://example.org/c#castle" }, { "@id": "https://example.org/c#unknown" }] },
     { "@id": "https://example.org/c#castle", "http://www.w3.org/1999/02/22-rdf-syntax-ns#type": [{ "@id": SKOS + "Concept" }],
       [SKOS + "prefLabel"]: text("Castle", "Hrad"), [SKOS + "definition"]: text("A strong house.", "Pevný dům."), [SKOS + "altLabel"]: [{ "@value": "Zámek", "@language": "cs" }],
+      [SKOS + "hiddenLabel"]: [{ "@value": "hradu", "@language": "cs" }, { "@value": "hrady", "@language": "cs" }], [SKOS + "scopeNote"]: text("With a wall.", "S hradbou."),
       [SKOS + "broader"]: [{ "@id": "https://example.org/c#hill" }], "http://www.w3.org/2000/01/rdf-schema#seeAlso": [{ "@id": "https://example.org/unit/b" }] },
     { "@id": "https://example.org/unit/b", "http://purl.org/dc/terms/title": text("Second", "Druhá"), "https://schema.org/position": [{ "@value": 2 }] },
     { "@id": "https://example.org/unit/a", "http://purl.org/dc/terms/identifier": [{ "@value": "1" }], "http://purl.org/dc/terms/title": text("First", "První"),
@@ -34,7 +35,8 @@ test("expanded JSON-LD with SKOS concepts becomes atlas data", () => {
     languages: ["en", "cs"],
     units: [{ id: "1", title: { en: "First", cs: "První" } }, { id: "b", title: { en: "Second", cs: "Druhá" } }],
     concepts: [
-      { id: "castle", prefLabel: { en: "Castle", cs: "Hrad" }, definition: { en: "A strong house.", cs: "Pevný dům." }, altLabel: { cs: ["Zámek"] }, broader: ["hill"], related: [], units: ["b"] },
+      { id: "castle", prefLabel: { en: "Castle", cs: "Hrad" }, definition: { en: "A strong house.", cs: "Pevný dům." }, scopeNote: { en: "With a wall.", cs: "S hradbou." },
+        altLabel: { cs: ["Zámek"] }, hiddenLabel: { cs: ["hradu", "hrady"] }, broader: ["hill"], related: [], units: ["b"] },
       { id: "hill", prefLabel: { en: "Hill", cs: "Kopec" }, definition: { en: "A raised place.", cs: "Vyvýšené místo." }, broader: [], related: ["castle"], units: ["1"] },
     ],
   });
@@ -83,7 +85,7 @@ test("the manifest refresh updates the digests of the companion data", () => {
 
 test("the export carries the companion runtimes, pages and data, and each page loads its scripts in order", () => {
   const manifest = exportInto(repository, join(temporary, "vendor"));
-  for (const name of ["runtime/companion-pages.js", "runtime/companion-pages.css", "runtime/concept-atlas.js", "runtime/asset-library.js", "htmltools/concepts.ts",
+  for (const name of ["runtime/companion-pages.js", "runtime/companion-pages.css", "runtime/concept-atlas.js", "runtime/concept-links.js", "runtime/asset-library.js", "htmltools/concepts.ts",
     "templates/concept-atlas.html", "templates/concept-dictionary.html", "templates/concept-panel.html", "templates/asset-library.html", "templates/references.html",
     "templates/companion.js", "templates/companion.css", "templates/concepts.json", "templates/concepts.jsonld", "templates/concepts-manifest.json", "templates/library.json"]) {
     expect(manifest.files[name]).toBe(digest(readFileSync(join(repository, name))));

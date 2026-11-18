@@ -37,13 +37,15 @@
     var here = typeof location !== "undefined" ? location.pathname : "/deck.html";
     var STORE = "slides.annotations:" + here;
     var deckName = here.split("/").pop() || "deck";
-    var records = typeof localStorage !== "undefined" ? load() : [];
+    var records = load();
     var on = false;
     var pending = null;
     var pendingAddress = null;
 
+    // A page in a sandboxed frame cannot read storage: the access itself throws, also under `typeof`. The notes
+    // then live in memory for the visit, and the script still starts.
     function load() {
-        try { return JSON.parse(localStorage.getItem(STORE) || "[]"); } catch (e) { return []; }
+        try { var saved = JSON.parse(localStorage.getItem(STORE) || "[]"); return Array.isArray(saved) ? saved : []; } catch (e) { return []; }
     }
     function save() {
         try { localStorage.setItem(STORE, JSON.stringify(records)); } catch (e) { /* storage unavailable: keep in memory */ }

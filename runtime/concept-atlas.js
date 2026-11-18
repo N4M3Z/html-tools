@@ -1,8 +1,8 @@
 // Concept atlas: the concepts of a page set, as an atlas, a dictionary, or a panel over another page.
 //
-// The data is JSON with SKOS names: prefLabel and definition per language, altLabel, broader, related, and
-// the units where a concept appears. Load language-copy.js and companion-pages.js before this file.
-// The views never write data as HTML.
+// The data is JSON with SKOS names: prefLabel and definition per language, altLabel, hiddenLabel, scopeNote,
+// broader, related, and the units where a concept appears. Load language-copy.js and companion-pages.js
+// before this file. The views never write data as HTML.
 (function (root) {
   'use strict';
 
@@ -21,7 +21,7 @@
     graph: 'The selected concept and its neighbors. The numbers match the list below the graph.',
     graphLimit: 'The graph shows a limited count of neighbors. The relation list is complete.',
     noDefinition: 'No definition is available.', dictionary: 'Dictionary', atlas: 'Atlas', downloads: 'Downloads',
-    broader: 'has the broader concept', related: 'relates to', command: 'Concepts',
+    broader: 'has the broader concept', related: 'relates to', command: 'Concepts', scopeNote: 'Scope note',
   }};
 
   // Every problem in the data, as {record, field, message}. An empty list means that the data is valid.
@@ -41,10 +41,13 @@
     check.records('concepts', raw.concepts, (name, concept, id) => {
       check.text(name, 'prefLabel', concept.prefLabel, {required: true});
       check.text(name, 'definition', concept.definition, {required: true});
-      if (concept.altLabel != null) {
-        const lists = isRecord(concept.altLabel) ? Object.values(concept.altLabel) : [null];
+      check.text(name, 'scopeNote', concept.scopeNote);
+      // Other names show in the views. Hidden names never show: search and concept links read them.
+      for (const field of ['altLabel', 'hiddenLabel']) {
+        if (concept[field] == null) continue;
+        const lists = isRecord(concept[field]) ? Object.values(concept[field]) : [null];
         if (!lists.every(list => Array.isArray(list) && list.every(label => typeof label === 'string'))) {
-          check.add(name, 'altLabel', 'is not a list of names for each language');
+          check.add(name, field, 'is not a list of names for each language');
         }
       }
       check.refs(name, 'broader', concept.broader, conceptIds, id);
@@ -83,7 +86,10 @@
     };
     for (const concept of raw.concepts) {
       const id = concept.id, unitIds = [...new Set((concept.units || []).map(Pages.identifier))];
-      concepts[id] = {id, prefLabel: concept.prefLabel, definition: concept.definition, altLabel: concept.altLabel || {}, units: Pages.unitOrder(unitIds)};
+      concepts[id] = {
+        id, prefLabel: concept.prefLabel, definition: concept.definition, scopeNote: concept.scopeNote || null,
+        altLabel: concept.altLabel || {}, hiddenLabel: concept.hiddenLabel || {}, units: Pages.unitOrder(unitIds),
+      };
       for (const unit of unitIds) units[unit].concepts.push(id);
       for (const target of concept.broader || []) add(id, 'broader', target);
       // "related" has no direction, so one pair is one relation.
@@ -121,7 +127,8 @@
   function search(data, query, language) {
     const ids = Object.keys(data.concepts).filter(id => {
       const concept = data.concepts[id];
-      return Pages.matches([id, ...Pages.texts(concept.prefLabel), ...Pages.texts(concept.altLabel), ...Pages.texts(concept.definition)], query);
+      return Pages.matches([id, ...Pages.texts(concept.prefLabel), ...Pages.texts(concept.altLabel), ...Pages.texts(concept.hiddenLabel),
+        ...Pages.texts(concept.definition), ...Pages.texts(concept.scopeNote)], query);
     });
     return order(data, ids, language);
   }
@@ -192,6 +199,14 @@
     function names(concept) {
       const list = Array.isArray(concept.altLabel[language]) ? concept.altLabel[language] : [];
       return list.length ? el('p', 'cp-muted', t('altLabels') + ': ' + list.join(', ')) : null;
+    }
+    // The scope note says how this page set uses the concept, for example where its meaning is narrower.
+    function scopeNote(concept) {
+      const text = say(concept.scopeNote);
+      if (!text) return null;
+      const note = el('p', 'cp-scope-note');
+      note.append(el('strong', '', t('scopeNote') + ': '), text);
+      return note;
     }
     function select(id, notify = true) {
       if (!data || !data.concepts[id]) return;
@@ -279,8 +294,7 @@
       const concept = data.concepts[selected];
       detail.append(el('p', 'cp-category', t(category(found, selected))), el('h2', 'cp-concept-title', label(data, selected, language)),
         el('p', 'cp-definition', say(concept.definition) || t('noDefinition')));
-      const other = names(concept);
-      if (other) detail.append(other);
+      for (const part of [scopeNote(concept), names(concept)]) if (part) detail.append(part);
       detail.append(renderGraph(selected), el('h3', '', t('relations')));
       const edges = neighborhood(data, selected, language).edges, list = el('ul', 'cp-relations');
       for (const edge of edges) {
@@ -304,8 +318,7 @@
         if (id === selected) { card.classList.add('cp-selected'); target = card; }
         heading.append(el('span', '', label(data, id, language)));
         card.append(heading, el('p', 'cp-definition', say(concept.definition) || t('noDefinition')));
-        const other = names(concept);
-        if (other) card.append(other);
+        for (const part of [scopeNote(concept), names(concept)]) if (part) card.append(part);
         const atlas = options.atlasHref ? pageHref(options.atlasHref, {language, unit, concept: id}) : null;
         if (atlas) card.append(Pages.link(doc, t('relations'), atlas));
         card.append(unitList(concept));
@@ -366,12 +379,18 @@
     return {update, select, ready, get selected() { return selected; }, get input() { return input; }, get language() { return language; }};
   }
 
-  // A dialog over the page with the concepts of the unit on view. Returns {open, close, toggle, sync, view}.
+  // A panel over the page with the concepts of the unit on view. Returns {open, close, toggle, select, sync, view}.
   // `unit` is a function that returns the unit id on view. The default reads `unit` from the address.
+  // The default is a modal dialog. With `dock: 'side'` the panel takes the right edge and the page stays in
+  // use: the panel sets `--inset-right` on <html> to its width and fires a resize event, so a page that fits
+  // itself to the window moves aside, and the keys of the page keep their work. A deck uses the docked panel
+  // as its slide map: the concepts of the slide on view, next to the slide.
+  // `follow` names the document event that says another unit is on view. The default is `slidekit:slide`.
   function panel(options = {}) {
     const doc = options.document || root.document, copy = Pages.words(WORDS, options.words), fallback = options.fallback || 'en';
+    const docked = options.dock === 'side', follow = options.follow === undefined ? 'slidekit:slide' : options.follow;
     const t = key => Copy.lookup(copy, doc.documentElement.lang || fallback, fallback, key);
-    const dialog = Pages.element(doc, 'dialog', 'cp-panel cp-root'), head = Pages.element(doc, 'div', 'cp-panel-head');
+    const dialog = Pages.element(doc, 'dialog', 'cp-panel cp-root' + (docked ? ' cp-docked' : '')), head = Pages.element(doc, 'div', 'cp-panel-head');
     dialog.id = options.id || 'cp-concept-panel';
     const title = Pages.element(doc, 'h2'), closer = Pages.element(doc, 'button', 'cp-button'), content = Pages.element(doc, 'div', 'cp-panel-content');
     title.id = dialog.id + '-title'; closer.type = 'button';
@@ -389,22 +408,46 @@
         trigger.setAttribute('aria-expanded', String(dialog.open));
       }
     }
+    // The docked panel tells the page its width. One panel has the right edge at a time.
+    function inset() {
+      if (!docked) return;
+      const width = dialog.open ? Math.round(dialog.getBoundingClientRect().width) : 0, style = doc.documentElement.style;
+      if (width) style.setProperty('--inset-right', width + 'px'); else style.removeProperty('--inset-right');
+      root.dispatchEvent(new root.Event('resize'));
+    }
     function open(opener) {
       if (dialog.open) return;
       returnTo = opener && opener.focus ? opener : doc.activeElement;
-      sync(); dialog.showModal(); sync(); closer.focus({preventScroll: true});
+      sync();
+      if (docked) {
+        doc.dispatchEvent(new root.CustomEvent('html-tools:side-panel', {detail: {owner: dialog.id}}));
+        dialog.show();
+        // The focus stays on the page, so the keys of the page still work.
+        if (doc.activeElement && dialog.contains(doc.activeElement)) doc.activeElement.blur();
+      } else dialog.showModal();
+      sync(); inset();
+      if (!docked) closer.focus({preventScroll: true});
     }
     function close() { if (dialog.open) dialog.close(); }
     const toggle = opener => (dialog.open ? close() : open(opener));
+    // Open the panel on one concept, as a concept link does.
+    function select(id, opener) {
+      open(opener);
+      view.ready.then(() => view.update({unit: unitNow(), selected: id}));
+    }
     closer.addEventListener('click', close);
     dialog.addEventListener('close', () => {
-      sync();
+      sync(); inset();
       const target = returnTo && returnTo.isConnected ? returnTo : trigger;
-      if (target && target.focus) target.focus({preventScroll: true});
+      if (!docked && target && target.focus) target.focus({preventScroll: true});
       returnTo = null;
     });
-    // The page under the panel does not see keys and clicks that the panel handles.
-    dialog.addEventListener('keydown', event => event.stopPropagation());
+    // The page under the panel does not see keys and clicks that the panel handles. The docked panel keeps
+    // only the keys of a field and the keys that press a button, so the arrows still move the page.
+    dialog.addEventListener('keydown', event => {
+      const field = event.target.matches && event.target.matches('input,textarea,select,[contenteditable]');
+      if (!docked || field || event.key === 'Enter' || event.key === ' ') event.stopPropagation();
+    });
     dialog.addEventListener('click', event => event.stopPropagation());
     function onKey(event) {
       const action = shortcut(event, dialog.open, dialog.contains(event.target), options.key === undefined ? 'o' : options.key);
@@ -412,16 +455,22 @@
       event.preventDefault(); event.stopImmediatePropagation();
       if (action === 'close') close(); else toggle(event.target);
     }
+    const onUnit = () => { if (dialog.open) sync(); };
+    const onOther = event => { if (docked && dialog.open && event.detail && event.detail.owner !== dialog.id) close(); };
     root.addEventListener('keydown', onKey, true);
-    if (trigger) trigger.addEventListener('click', event => { event.preventDefault(); open(trigger); });
+    if (trigger) trigger.addEventListener('click', event => { event.preventDefault(); toggle(trigger); });
     const watch = new root.MutationObserver(sync);
     watch.observe(doc.documentElement, {attributes: true, attributeFilter: ['lang']});
     root.addEventListener('hashchange', sync);
+    if (follow) doc.addEventListener(follow, onUnit);
+    doc.addEventListener('html-tools:side-panel', onOther);
     (root.HTML_COMMANDS = root.HTML_COMMANDS || []).push(() => [{label: t('command'), hint: options.key === undefined ? 'O' : String(options.key || '').toUpperCase(), group: 'panels', run: () => toggle(), state: () => dialog.open}]);
     sync();
-    return {open, close, toggle, sync, view, dialog, destroy() {
+    return {open, close, toggle, select, sync, view, dialog, docked, destroy() {
       root.removeEventListener('keydown', onKey, true); root.removeEventListener('hashchange', sync);
-      watch.disconnect(); dialog.remove();
+      if (follow) doc.removeEventListener(follow, onUnit);
+      doc.removeEventListener('html-tools:side-panel', onOther);
+      watch.disconnect(); close(); dialog.remove();
     }};
   }
 

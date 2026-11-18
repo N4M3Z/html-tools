@@ -36,6 +36,8 @@ test('validation names the bad record and its field', () => {
   data.concepts[1].definition = 'A small house.';
   data.concepts[1].altLabel = {cs: 'Chýše'};
   data.concepts[2].broader = ['building', 'tower'];
+  data.concepts[2].scopeNote = {en: 'Only a roofed one.'};
+  data.concepts[2].hiddenLabel = ['buildings'];
   data.concepts[3].units = [2, 7];
   data.concepts[3].relations = [{target: 'castle'}, {type: 'supports', target: 'nothing'}];
   data.concepts.push({id: 'castle', prefLabel: both('Again', 'Znovu'), definition: both('x', 'y')});
@@ -49,6 +51,8 @@ test('validation names the bad record and its field', () => {
     'concepts[0] "castle" prefLabel: has no text for cs',
     'concepts[1] "hut" definition: has no text for en, cs',
     'concepts[1] "hut" altLabel: is not a list of names for each language',
+    'concepts[2] "building" scopeNote: has no text for cs',
+    'concepts[2] "building" hiddenLabel: is not a list of names for each language',
     'concepts[2] "building" broader: names the record itself',
     'concepts[2] "building" broader: names "tower", which does not exist',
     'concepts[3] "hill" units: names "7", which does not exist',
@@ -111,6 +115,14 @@ test('search folds diacritics, reads both languages, and sorts per language', ()
   assert.deepEqual(Atlas.search(data, 'DŮM', 'cs'), ['castle', 'hut']);
   assert.deepEqual(Atlas.search(data, 'house small', 'cs'), ['hut']);
   assert.deepEqual(Atlas.search(data, 'no such text', 'en'), []);
+  const more = sample();
+  more.concepts[4].hiddenLabel = {cs: ['cihel', 'cihlami']};
+  more.concepts[4].scopeNote = both('Fired clay only.', 'Jen pálená hlína.');
+  const extended = Atlas.normalize(more);
+  assert.deepEqual(Atlas.validate(more), []);
+  assert.deepEqual(Atlas.search(extended, 'cihlami', 'en'), ['brick']);
+  assert.deepEqual(Atlas.search(extended, 'hlina', 'en'), ['brick']);
+  assert.deepEqual([extended.concepts.brick.scopeNote.en, extended.concepts.hut.scopeNote, extended.concepts.hut.hiddenLabel], ['Fired clay only.', null, {}]);
   assert.equal(Atlas.label(data, 'hut', 'cs'), 'Chata');
   assert.equal(Atlas.label(data, 'hut', 'de'), 'Hut');
 });

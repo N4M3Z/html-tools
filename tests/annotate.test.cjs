@@ -48,3 +48,16 @@ test('a note inside a figure frame names the frame file and the element path, an
   assert.match(line, /`deck\.html#a-model › div\[2\] › graphics\/llm-file-figure\.html › #stamp` - stamp clipped \(on: “NO PROGRAM INSIDE FROZEN SINCE TRAINING”\)$/);
   assert.doesNotMatch(line, /of the figure/);
 });
+
+test('the script loads when the page cannot read storage', () => {
+  const file = require.resolve('../runtime/annotate.js');
+  const before = Object.getOwnPropertyDescriptor(globalThis, 'localStorage');
+  delete require.cache[file];
+  Object.defineProperty(globalThis, 'localStorage', {configurable: true, get() { throw new Error('The operation is insecure.'); }});
+  try {
+    assert.equal(typeof require(file).formatTuicr, 'function');
+  } finally {
+    if (before) Object.defineProperty(globalThis, 'localStorage', before); else delete globalThis.localStorage;
+    delete require.cache[file];
+  }
+});

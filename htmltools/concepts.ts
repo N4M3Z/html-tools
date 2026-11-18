@@ -90,10 +90,13 @@ export function fromJsonLd(document: unknown, options: ConceptOptions = {}): Rec
     const iri = node["@id"]!;
     const inside = (key: string) => refs(node, SKOS + key).filter((target) => conceptId.has(target)).map((target) => conceptId.get(target)!).sort();
     const units = unitRecords.filter((unit) => unitConcepts.get(unit.iri)!.has(iri)).map((unit) => unit.id);
-    const altLabel = lists(node, SKOS + "altLabel");
+    const altLabel = lists(node, SKOS + "altLabel"), hiddenLabel = lists(node, SKOS + "hiddenLabel");
+    const scopeNote = texts(node, SKOS + "scopeNote");
     return {
       id: conceptId.get(iri)!, prefLabel: texts(node, SKOS + "prefLabel"), definition: texts(node, SKOS + "definition"),
-      ...(Object.keys(altLabel).length ? { altLabel } : {}), broader: inside("broader"), related: inside("related"), units,
+      ...(Object.keys(scopeNote).length ? { scopeNote } : {}),
+      ...(Object.keys(altLabel).length ? { altLabel } : {}), ...(Object.keys(hiddenLabel).length ? { hiddenLabel } : {}),
+      broader: inside("broader"), related: inside("related"), units,
     };
   }).sort((a, b) => a.id.localeCompare(b.id, "en"));
 

@@ -62,7 +62,8 @@ cannot.
 Load `runtime/annotate.js` after the page's own script. Press `A` (or open the page with `?annotate=1`),
 click any element in the unit on view, pick ISSUE, NOTE, SUGGESTION or PRAISE with `Option+1` to `Option+4`,
 type the note, press Enter. Paste a screenshot into the note box to attach it. Notes persist in the browser per
-page path and show as badges in annotate mode only. Elements inside same-origin figure frames and parts of an
+page path and show as badges in annotate mode only. A page in a sandboxed frame cannot read its storage: the
+notes then stay in memory for the visit, and annotate mode still starts. Elements inside same-origin figure frames and parts of an
 inline SVG can be annotated. Copy puts a tuicr review comment on the clipboard: one numbered `**[KIND]**` line
 per note with the unit id and the element's address.
 
@@ -87,9 +88,14 @@ Load `runtime/palette.js`, then `runtime/pane.js`. Commands come from `window.HT
 is optional: a function that returns whether the command's mode is on, for a host that shows it. Any
 script pushes onto it, before or after these load, and `HtmlCommands.all()` flattens it. The annotation and
 contrast scripts register their own commands under the group `modes`. `⌘K`, `Ctrl+K` or `/` opens the
-palette: type to filter, arrows move, Enter runs, Escape closes. `C` opens the pane: every command, grouped
-by `group` in order of first appearance, always visible while open, with `here: true` entries marked. The
-pane sets `--inset-right` while open, like the annotation panel.
+palette: type to filter, arrows move, Enter runs, Escape closes. `C`, `⌘P` or `Ctrl+P` opens the pane: every
+command, grouped by `group` in order of first appearance, always visible while open, with `here: true` entries
+marked. The group `slides`, the jump list of a deck, comes last, so the tools are on the first screen of the
+pane. `⌘P` and `Ctrl+P` open the pane in place of the print dialog. Print from the browser menu. The pane sets
+`--inset-right` while open, like the annotation panel.
+
+One panel has the right edge at a time. A panel that opens there dispatches `html-tools:side-panel` on the
+document with its name in `detail.owner`. The pane and the docked concept panel close when another owner opens.
 
 ## High contrast
 
@@ -237,6 +243,31 @@ The selected concept has a graph of its neighbors, its relations, and links to i
 concept with its definition, in the alphabetical order of the active language. `ConceptAtlas.panel(options)` adds a
 dialog to another page. The `O` key or the `trigger` button opens it with the concepts of the unit on view.
 The `unit` option is a function that returns that unit, and the default reads `unit` from the address.
+`panel.select(id)` opens the panel on one concept.
+
+With `dock: 'side'` the panel is not modal. It takes the right edge, sets `--inset-right` on `<html>` to its
+width and fires a resize event, so a page that fits itself to the window moves aside. The focus stays on the
+page, and the keys of the page keep their work. The panel follows the unit on view: it reads the unit again on
+`hashchange` and on the document event that `follow` names, by default `slidekit:slide`. A deck uses the docked
+panel as its slide map: the concepts of the slide on view, next to the slide.
+
+```html
+<script src="vendor/html-tools/runtime/concept-links.js"></script>
+<script>
+  const panel = ConceptAtlas.panel({ src: 'concepts.json', dock: 'side', unit: () => SlideShow.slides[SlideShow.at()].id });
+  ConceptLinks.attach({ src: 'concepts.json', panel });
+</script>
+```
+
+`ConceptLinks.attach(options)` reads the same data. In the text of each unit, the first mention of each concept
+of that unit becomes a link that opens the panel on that concept. A mention is a whole word in any case: the
+preferred label, another name, or a hidden name, in the language of the page. An English name also matches with a
+plural ending. A longer name takes its words first, so `tide` gets no link inside `spring tide`. A link stands in
+a paragraph, a list item, a table cell or a card, and never in a heading, a control, code or a figure. `unit` is
+the selector of a unit (default: the shape in `window.HTML_ANNOTATE`, else `.slide`) and `unitId(element)` gives
+its id (default: the element id). `onOpen(id, link)` replaces the panel. Annotate mode keeps its clicks.
+A unit can hold alternatives and show one of them, such as the inline versions of a slide. Each element that
+matches `part` (default: `[data-version]`) gets its own first mentions, so no link stands only in a hidden part.
 
 `AssetLibrary.mount(host, { src: 'library.json', view: 'assets' })` lists each media record with its file, SHA-256
 digest, source, license status, notes, and units. It has a search, a license status filter, and a unit filter.
@@ -249,6 +280,9 @@ example in its section bar. `unitHref` is the link template from a companion pag
 
 The data formats are `html-tools-concept-atlas/v1` and `html-tools-asset-library/v1`. The concept format uses SKOS
 names: `prefLabel` and `definition` for each language, `altLabel`, `broader`, `related`, and `units`.
+Two more names are optional. `scopeNote`, a text for each language, says how this page set uses the concept, and
+the views show it under the definition. `hiddenLabel`, a list of names for each language, never shows: search
+and concept links read it, so a language with inflection lists its other word forms there.
 [The design](docs/changes/companion-pages/design.md) has both formats and the address fields.
 `validate(raw)` returns each problem with its record, such as `concepts[3] "hill" units: names "7", which does
 not exist`. A view with bad data shows those lines. Search ignores case and diacritics and reads every language.
